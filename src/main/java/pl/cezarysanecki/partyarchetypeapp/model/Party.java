@@ -2,6 +2,7 @@ package pl.cezarysanecki.partyarchetypeapp.model;
 
 import pl.cezarysanecki.partyarchetypeapp.common.Result;
 import pl.cezarysanecki.partyarchetypeapp.common.Version;
+import pl.cezarysanecki.partyarchetypeapp.common.events.PublishedEvent;
 import pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedEvent;
 
 import java.util.LinkedList;
@@ -107,6 +108,10 @@ public abstract class Party {
 
     public List<PartyRelatedEvent> events() {
         return List.copyOf(events);
+    }
+
+    public List<PublishedEvent> publishedEvents() {
+        return events.stream().filter(PublishedEvent.class::isInstance).map(PublishedEvent.class::cast).toList();
     }
 
     public Version version() {
