@@ -93,12 +93,16 @@ public abstract class Party {
         return Result.success(this);
     }
 
-    public PartyId partyId() {
+    public PartyId id() {
         return partyId;
     }
 
     public Set<Role> roles() {
         return Set.copyOf(roles);
+    }
+
+    public Set<RegisteredIdentifier> registeredIdentifiers() {
+        return Set.copyOf(registeredIdentifiers);
     }
 
     public List<PartyRelatedEvent> events() {
