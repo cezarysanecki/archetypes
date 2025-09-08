@@ -20,7 +20,7 @@ public final class Person extends Party {
         this.personalData = personalData;
     }
 
-    public final PersonalData personalData() {
+    public PersonalData personalData() {
         return this.personalData;
     }
 

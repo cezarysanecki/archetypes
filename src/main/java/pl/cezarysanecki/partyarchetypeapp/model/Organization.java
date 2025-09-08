@@ -22,7 +22,7 @@ public abstract class Organization extends Party {
         this.organizationName = organizationName;
     }
 
-    public final OrganizationName organizationName() {
+    public OrganizationName organizationName() {
         return this.organizationName;
     }
 }

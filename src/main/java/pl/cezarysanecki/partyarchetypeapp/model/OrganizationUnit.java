@@ -10,8 +10,11 @@ import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRegistered.Or
 
 public final class OrganizationUnit extends Organization {
 
-    OrganizationUnit(PartyId partyId, OrganizationName organizationName, Set<Role> roles,
-                     Set<RegisteredIdentifier> registeredIdentifiers, Version version) {
+    OrganizationUnit(PartyId partyId,
+                     OrganizationName organizationName,
+                     Set<Role> roles,
+                     Set<RegisteredIdentifier> registeredIdentifiers,
+                     Version version) {
         super(partyId, organizationName, roles, registeredIdentifiers, version);
     }
 

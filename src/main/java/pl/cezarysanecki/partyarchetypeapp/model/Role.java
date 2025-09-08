@@ -6,7 +6,7 @@ import static pl.cezarysanecki.partyarchetypeapp.common.StringUtils.isNotBlank;
 public record Role(String name) {
 
     public Role {
-        checkArgument(isNotBlank(name), "Role name cannot be null");
+        checkArgument(isNotBlank(name), "Role name cannot be blank");
     }
 
     static Role of(String value) {
