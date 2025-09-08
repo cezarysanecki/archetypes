@@ -28,4 +28,27 @@ public sealed interface PartyRelatedSucceededEvent extends PartyRelatedEvent {
 
     }
 
+    record RegisteredIdentifierAdded(String partyId, String type, String value) implements PartyRelatedSucceededEvent, PublishedEvent {
+    }
+    record RegisteredIdentifierAdditionSkipped(String partyId, String type, String value, String reason) implements PartyRelatedSucceededEvent {
+
+        private static final String DUPLICATION_REASON = "DUPLICATION";
+
+        public static RegisteredIdentifierAdditionSkipped dueToDataDuplicationFor(String partyId, String type, String value) {
+            return new RegisteredIdentifierAdditionSkipped(partyId, type, value, DUPLICATION_REASON);
+        }
+
+    }
+
+    record RegisteredIdentifierRemoved(String partyId, String type, String value) implements PartyRelatedSucceededEvent, PublishedEvent {
+    }
+    record RegisteredIdentifierRemovalSkipped(String partyId, String type, String value, String reason) implements PartyRelatedSucceededEvent {
+
+        private static final String MISSING_IDENTIFIER_REASON = "MISSING_IDENTIFIER";
+
+        public static RegisteredIdentifierRemovalSkipped dueToMissingIdentifierFor(String partyId, String type, String value) {
+            return new RegisteredIdentifierRemovalSkipped(partyId, type, value, MISSING_IDENTIFIER_REASON);
+        }
+    }
+
 }
