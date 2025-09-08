@@ -3,6 +3,7 @@ package pl.cezarysanecki.partyarchetypeapp.model;
 import pl.cezarysanecki.partyarchetypeapp.common.Result;
 import pl.cezarysanecki.partyarchetypeapp.common.Version;
 import pl.cezarysanecki.partyarchetypeapp.common.events.PublishedEvent;
+import pl.cezarysanecki.partyarchetypeapp.model.events.PartyRegistered;
 import pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedEvent;
 
 import java.util.LinkedList;
@@ -116,6 +117,12 @@ public abstract class Party {
 
     public Version version() {
         return version;
+    }
+
+    abstract PartyRegistered toPartyRegisteredEvent();
+
+    final void register(PartyRelatedEvent event) {
+        events.add(event);
     }
 
 }

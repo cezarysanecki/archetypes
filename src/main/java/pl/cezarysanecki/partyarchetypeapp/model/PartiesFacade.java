@@ -1,19 +1,40 @@
 package pl.cezarysanecki.partyarchetypeapp.model;
 
 import pl.cezarysanecki.partyarchetypeapp.common.Result;
+import pl.cezarysanecki.partyarchetypeapp.common.Version;
 import pl.cezarysanecki.partyarchetypeapp.common.events.EventPublisher;
 import pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent;
 
+import java.util.Set;
+import java.util.function.Supplier;
+
 import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.*;
+import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.PartyNotFound;
+import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.RegisteredIdentifierAdditionFailed;
+import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.RegisteredIdentifierRemovalFailed;
 
 public class PartiesFacade {
 
     private final PartyRepository partyRepository;
     private final EventPublisher eventPublisher;
+    private final Supplier<PartyId> newPartyIdSupplier;
 
-    PartiesFacade(PartyRepository partyRepository, EventPublisher eventPublisher) {
+    PartiesFacade(PartyRepository partyRepository, EventPublisher eventPublisher, Supplier<PartyId> newPartyIdSupplier) {
         this.partyRepository = partyRepository;
         this.eventPublisher = eventPublisher;
+        this.newPartyIdSupplier = newPartyIdSupplier != null ? newPartyIdSupplier : PartyId::random;
+    }
+
+    public Result<PartyRelatedFailureEvent, Person> registerPersonFor(PersonalData personalData, Set<Role> roles, Set<RegisteredIdentifier> registeredIdentifiers) {
+        return registerPartyAccordingTo(() -> new Person(newPartyIdSupplier.get(), personalData, roles, registeredIdentifiers, Version.initial())).map(Person.class::cast);
+    }
+
+    public Result<PartyRelatedFailureEvent, Company> registerCompanyFor(OrganizationName organizationName, Set<Role> roles, Set<RegisteredIdentifier> registeredIdentifiers) {
+        return registerPartyAccordingTo(() -> new Company(newPartyIdSupplier.get(), organizationName, roles, registeredIdentifiers, Version.initial())).map(Company.class::cast);
+    }
+
+    public Result<PartyRelatedFailureEvent, OrganizationUnit> registerOrganizationUnitFor(OrganizationName organizationName, Set<Role> roles, Set<RegisteredIdentifier> registeredIdentifiers) {
+        return registerPartyAccordingTo(() -> new OrganizationUnit(newPartyIdSupplier.get(), organizationName, roles, registeredIdentifiers, Version.initial())).map(OrganizationUnit.class::cast);
     }
 
     public Result<PartyRelatedFailureEvent, Party> add(PartyId partyId, Role role) {
@@ -50,6 +71,17 @@ public class PartiesFacade {
                 .orElse(Result.failure(new RegisteredIdentifierRemovalFailed(partyId.asString(), identifier.asString(), "PARTY_NOT_FOUND")))
                 .peekSuccess(partyRepository::save)
                 .peekSuccess(party -> eventPublisher.publish(party.publishedEvents()));
+    }
+
+    private Result<PartyRelatedFailureEvent, Party> registerPartyAccordingTo(Supplier<Party> partySupplier) {
+        try {
+            Party party = partySupplier.get();
+            partyRepository.save(party);
+            eventPublisher.publish(party.toPartyRegisteredEvent());
+            return Result.success(party);
+        } catch (Exception ex) {
+            return Result.failure(PartyRegistrationFailed.dueTo(ex));
+        }
     }
 
 }
