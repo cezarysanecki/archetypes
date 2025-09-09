@@ -1,6 +1,6 @@
 package pl.cezarysanecki.partyarchetypeapp.model;
 
-import pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelationshipAdded;
+import pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedSucceededEvent.PartyRelationshipAdded;
 
 public record PartyRelationship(PartyRelationshipId id, PartyRole from, PartyRole to, RelationshipName name) {
 

@@ -10,6 +10,8 @@ public interface PartyRelationshipRepository {
 
     List<PartyRelationship> findAllRelationsFrom(PartyId partyId, RelationshipName name);
 
+    List<PartyRelationship> findAllRelationsFrom(PartyId partyId, Role role);
+
     Optional<PartyRelationship> findBy(PartyRelationshipId relationshipId);
 
     void save(PartyRelationship partyRelationship);

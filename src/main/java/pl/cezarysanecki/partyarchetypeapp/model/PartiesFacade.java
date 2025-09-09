@@ -10,12 +10,13 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.*;
 import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.PartyNotFound;
+import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.PartyRegistrationFailed;
 import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.RegisteredIdentifierAdditionFailed;
 import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.RegisteredIdentifierRemovalFailed;
 
 public class PartiesFacade {
+
     private static final BiFunction<PartyRelatedFailureEvent, PartyRelatedFailureEvent, PartyRelatedFailureEvent> ANY_FAILURE = (fromFailure, toFailure) -> fromFailure != null ? fromFailure : toFailure;
 
     private final PartyRepository partyRepository;
