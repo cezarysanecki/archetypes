@@ -6,6 +6,7 @@ public sealed interface PartyRelatedSucceededEvent extends PartyRelatedEvent {
 
     record RoleAdded(String partyId, String name) implements PartyRelatedSucceededEvent, PublishedEvent {
     }
+
     record RoleAdditionSkipped(String partyId, String name, String reason) implements PartyRelatedSucceededEvent {
 
         private static final String DUPLICATION_REASON = "DUPLICATION";
@@ -18,6 +19,7 @@ public sealed interface PartyRelatedSucceededEvent extends PartyRelatedEvent {
 
     record RoleRemoved(String partyId, String name) implements PartyRelatedSucceededEvent, PublishedEvent {
     }
+
     record RoleRemovalSkipped(String partyId, String name, String reason) implements PartyRelatedSucceededEvent {
 
         private static final String MISSING_ROLE_REASON = "MISSING_ROLE";
@@ -28,9 +30,12 @@ public sealed interface PartyRelatedSucceededEvent extends PartyRelatedEvent {
 
     }
 
-    record RegisteredIdentifierAdded(String partyId, String type, String value) implements PartyRelatedSucceededEvent, PublishedEvent {
+    record RegisteredIdentifierAdded(String partyId, String type,
+                                     String value) implements PartyRelatedSucceededEvent, PublishedEvent {
     }
-    record RegisteredIdentifierAdditionSkipped(String partyId, String type, String value, String reason) implements PartyRelatedSucceededEvent {
+
+    record RegisteredIdentifierAdditionSkipped(String partyId, String type, String value,
+                                               String reason) implements PartyRelatedSucceededEvent {
 
         private static final String DUPLICATION_REASON = "DUPLICATION";
 
@@ -40,9 +45,12 @@ public sealed interface PartyRelatedSucceededEvent extends PartyRelatedEvent {
 
     }
 
-    record RegisteredIdentifierRemoved(String partyId, String type, String value) implements PartyRelatedSucceededEvent, PublishedEvent {
+    record RegisteredIdentifierRemoved(String partyId, String type,
+                                       String value) implements PartyRelatedSucceededEvent, PublishedEvent {
     }
-    record RegisteredIdentifierRemovalSkipped(String partyId, String type, String value, String reason) implements PartyRelatedSucceededEvent {
+
+    record RegisteredIdentifierRemovalSkipped(String partyId, String type, String value,
+                                              String reason) implements PartyRelatedSucceededEvent {
 
         private static final String MISSING_IDENTIFIER_REASON = "MISSING_IDENTIFIER";
 
@@ -50,5 +58,30 @@ public sealed interface PartyRelatedSucceededEvent extends PartyRelatedEvent {
             return new RegisteredIdentifierRemovalSkipped(partyId, type, value, MISSING_IDENTIFIER_REASON);
         }
     }
+
+    record PartyRelationshipAdded(String partyRelationshipId,
+                                  String fromPartyId, String fromPartyRole,
+                                  String toPartyId, String toPartyRole,
+                                  String relationshipName) implements PartyRelatedEvent, PublishedEvent {
+
+    }
+
+    record PartyRelationshipAdditionSkipped(String partyRelationshipId,
+                                            String fromPartyId, String fromPartyRole,
+                                            String toPartyId, String toPartyRole,
+                                            String relationshipName,
+                                            String reason) implements PartyRelatedSucceededEvent {
+
+        private static final String DUPLICATION_REASON = "DUPLICATION";
+
+        public static PartyRelationshipAdditionSkipped dueToDataDuplicationFor(String partyRelationshipId,
+                                                                               String fromPartyId, String fromPartyRole,
+                                                                               String toPartyId, String toPartyRole,
+                                                                               String relationshipName) {
+            return new PartyRelationshipAdditionSkipped(partyRelationshipId, fromPartyId, fromPartyRole, toPartyId, toPartyRole, relationshipName, DUPLICATION_REASON);
+        }
+
+    }
+
 
 }

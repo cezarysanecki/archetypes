@@ -132,6 +132,14 @@ public sealed interface Result<F, S> permits Result.Success, Result.Failure {
         }
     }
 
+    default <FAILURE, SUCCESS, S1> Result<FAILURE, SUCCESS> combineOther(Result<F, S1> secondResult, BiFunction<F, F, FAILURE> failureCombiner, BiFunction<S, S1, SUCCESS> successCombiner) {
+        if (success() && secondResult.success()) {
+            return new Success<>(successCombiner.apply(getSuccess(), secondResult.getSuccess()));
+        } else {
+            return new Failure<>(failureCombiner.apply(failure() ? getFailure() : null, secondResult.failure() ? secondResult.getFailure() : null));
+        }
+    }
+
     default boolean success() {
         throw new IllegalStateException();
     }

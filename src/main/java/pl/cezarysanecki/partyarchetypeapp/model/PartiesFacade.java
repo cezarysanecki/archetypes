@@ -1,11 +1,13 @@
 package pl.cezarysanecki.partyarchetypeapp.model;
 
+import pl.cezarysanecki.partyarchetypeapp.common.Pair;
 import pl.cezarysanecki.partyarchetypeapp.common.Result;
 import pl.cezarysanecki.partyarchetypeapp.common.Version;
 import pl.cezarysanecki.partyarchetypeapp.common.events.EventPublisher;
 import pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent;
 
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.*;
@@ -14,14 +16,17 @@ import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailur
 import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.RegisteredIdentifierRemovalFailed;
 
 public class PartiesFacade {
+    private static final BiFunction<PartyRelatedFailureEvent, PartyRelatedFailureEvent, PartyRelatedFailureEvent> ANY_FAILURE = (fromFailure, toFailure) -> fromFailure != null ? fromFailure : toFailure;
 
     private final PartyRepository partyRepository;
     private final EventPublisher eventPublisher;
+    private final PartyRoleFactory partyRoleFactory;
     private final Supplier<PartyId> newPartyIdSupplier;
 
-    PartiesFacade(PartyRepository partyRepository, EventPublisher eventPublisher, Supplier<PartyId> newPartyIdSupplier) {
+    PartiesFacade(PartyRepository partyRepository, EventPublisher eventPublisher, PartyRoleFactory partyRoleFactory, Supplier<PartyId> newPartyIdSupplier) {
         this.partyRepository = partyRepository;
         this.eventPublisher = eventPublisher;
+        this.partyRoleFactory = partyRoleFactory;
         this.newPartyIdSupplier = newPartyIdSupplier != null ? newPartyIdSupplier : PartyId::random;
     }
 
@@ -39,9 +44,11 @@ public class PartiesFacade {
 
     public Result<PartyRelatedFailureEvent, Party> add(PartyId partyId, Role role) {
         return partyRepository.findBy(partyId)
-                .map(party -> party.add(role))
-                .map(party -> party.mapFailure(PartyRelatedFailureEvent.class::cast))
+                .map(party -> partyRoleFactory.defineFor(party, role)
+                        .mapFailure(PartyRelatedFailureEvent.class::cast)
+                        .combineOther(party.add(role).mapFailure(PartyRelatedFailureEvent.class::cast), ANY_FAILURE, Pair::of))
                 .orElse(Result.failure(new PartyNotFound(partyId.asString())))
+                .map(Pair::getSecond)
                 .peekSuccess(partyRepository::save)
                 .peekSuccess(party -> eventPublisher.publish(party.publishedEvents()));
     }

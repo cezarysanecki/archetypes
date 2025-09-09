@@ -20,4 +20,26 @@ public sealed interface PartyRelatedFailureEvent extends PartyRelatedEvent {
     record RegisteredIdentifierRemovalFailed(String partyId, String identifier, String reason) implements PartyRelatedFailureEvent {
     }
 
+    record PartyRoleDefinitionFailed(String reason) implements PartyRelatedFailureEvent {
+
+        private static final String POLICIES_NOT_MET_REASON = "Policies for assigning party role not met";
+
+        public static PartyRoleDefinitionFailed dueToPoliciesNotMet() {
+            return new PartyRoleDefinitionFailed(POLICIES_NOT_MET_REASON);
+        }
+    }
+
+    record PartyRelationshipDefinitionFailed(String reason) implements PartyRelatedFailureEvent {
+
+        private static final String POLICIES_NOT_MET_REASON = "Policies for defining party relationship not met";
+
+        public static PartyRelationshipDefinitionFailed dueToPoliciesNotMet() {
+            return new PartyRelationshipDefinitionFailed(POLICIES_NOT_MET_REASON);
+        }
+
+        public static PartyRelationshipDefinitionFailed dueTo(String reason) {
+            return new PartyRelationshipDefinitionFailed(reason);
+        }
+    }
+
 }
