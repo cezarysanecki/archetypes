@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import static pl.cezarysanecki.partyarchetypeapp.common.Preconditions.checkArgument;
 import static pl.cezarysanecki.partyarchetypeapp.common.Preconditions.checkNotNull;
 
-public sealed interface RegisteredIdentifier {
+public interface RegisteredIdentifier {
 
     String type();
 
