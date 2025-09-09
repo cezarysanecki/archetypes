@@ -39,3 +39,48 @@ sealed abstract class PartyAbstractTestDataBuilder<T extends Party> permits Comp
 
     abstract T build();
 }
+
+final class PersonTestDataBuilder extends PartyAbstractTestDataBuilder<Person> {
+
+    PersonalData personalData = PersonalData.empty();
+
+    PersonTestDataBuilder with(PersonalData personalData) {
+        this.personalData = personalData;
+        return this;
+    }
+
+    @Override
+    Person build() {
+        return new Person(partyId, personalData, roles, registeredIdentifiers, version);
+    }
+}
+
+final class CompanyTestDataBuilder extends PartyAbstractTestDataBuilder<Company> {
+
+    OrganizationName organizationName;
+
+    CompanyTestDataBuilder with(OrganizationName organizationName) {
+        this.organizationName = organizationName;
+        return this;
+    }
+
+    @Override
+    Company build() {
+        return new Company(partyId, organizationName, roles, registeredIdentifiers, version);
+    }
+}
+
+final class OrganizationUnitTestDataBuilder extends PartyAbstractTestDataBuilder<OrganizationUnit> {
+
+    OrganizationName organizationName;
+
+    OrganizationUnitTestDataBuilder with(OrganizationName organizationName) {
+        this.organizationName = organizationName;
+        return this;
+    }
+
+    @Override
+    OrganizationUnit build() {
+        return new OrganizationUnit(partyId, organizationName, roles, registeredIdentifiers, version);
+    }
+}
