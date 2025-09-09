@@ -83,5 +83,8 @@ public sealed interface PartyRelatedSucceededEvent extends PartyRelatedEvent {
 
     }
 
+    record PartyRelationshipRemoved(String partyRelationshipId) implements PartyRelatedEvent, PublishedEvent {
+
+    }
 
 }
