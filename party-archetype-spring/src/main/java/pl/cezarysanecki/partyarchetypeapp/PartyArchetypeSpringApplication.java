@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PartyArchetypeAppApplication {
+public class PartyArchetypeSpringApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PartyArchetypeAppApplication.class, args);
+        SpringApplication.run(PartyArchetypeSpringApplication.class, args);
     }
 
 }

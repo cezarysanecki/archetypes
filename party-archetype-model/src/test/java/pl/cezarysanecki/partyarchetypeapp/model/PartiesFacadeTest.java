@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static pl.cezarysanecki.partyarchetypeapp.common.CollectionFixture.copyAndAdd;
 import static pl.cezarysanecki.partyarchetypeapp.model.OrganizationNameFixture.someOrganizationName;
-import static pl.cezarysanecki.partyarchetypeapp.model.PartyFixture.*;
 import static pl.cezarysanecki.partyarchetypeapp.model.PartyFixture.somePerson;
 import static pl.cezarysanecki.partyarchetypeapp.model.PersonalDataFixture.somePersonalData;
 import static pl.cezarysanecki.partyarchetypeapp.model.RegisteredIdentifierFixture.someRegisteredIdentifier;

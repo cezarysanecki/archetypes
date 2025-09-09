@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group = "pl.cezarysanecki"
+version = "0.0.1-SNAPSHOT"
+description = "party-archetype-app"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
+    }
+}
+
+repositories {
+    mavenCentral()
+}

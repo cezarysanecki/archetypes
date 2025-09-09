@@ -1,0 +1,4 @@
+rootProject.name = "party-archetype-app"
+
+include 'party-archetype-model'
+include 'party-archetype-spring'
