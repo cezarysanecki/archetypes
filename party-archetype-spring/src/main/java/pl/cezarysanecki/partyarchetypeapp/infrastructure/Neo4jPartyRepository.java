@@ -1,6 +1,8 @@
 package pl.cezarysanecki.partyarchetypeapp.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Repository;
 import pl.cezarysanecki.partyarchetypeapp.model.Party;
@@ -13,10 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Repository
 class Neo4jPartyRepository implements PartyRepository {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(Neo4jPartyRepository.class);
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final static PartyFactory PARTY_FACTORY = new PartyFactory();
@@ -33,12 +36,7 @@ class Neo4jPartyRepository implements PartyRepository {
                 .bindAll(Map.of("id", partyId.asString()))
                 .fetchAs(Map.class)
                 .one()
-                .map(
-                        values -> {
-                            String type = (String) values.get("type");
-                            return PARTY_FACTORY.create(type, values);
-                        }
-                );
+                .map(Neo4jPartyRepository::createPartyFrom);
     }
 
     @Override
@@ -50,12 +48,18 @@ class Neo4jPartyRepository implements PartyRepository {
     @Override
     public void save(Party party) {
         try {
+            LOGGER.info("Saving Party: {}", party);
+
             Map<String, Object> values = OBJECT_MAPPER.convertValue(party, Map.class);
+            values.put("type", party.getClass().getSimpleName());
+
+            LOGGER.info("Saving Party: {} with values: {}", party, values);
 
             neo4jClient.query("CREATE (n:Party) SET n = $props")
                     .bind(values).to("props")
                     .run();
         } catch (Exception e) {
+            LOGGER.error("Could not save Party: {}", party, e);
             throw new RuntimeException("Cannot save Party " + party, e);
         }
     }
@@ -69,18 +73,33 @@ class Neo4jPartyRepository implements PartyRepository {
 
     @Override
     public List<Party> findBy(RegisteredIdentifier registeredIdentifier) {
-        return neo4jPartySpringRepository.findAll().stream()
-                .filter(e -> e.registeredIdentifiers.entrySet().stream()
-                        .anyMatch(entrySet -> entrySet.getKey().equals(registeredIdentifier.type()) && entrySet.getValue().equals(registeredIdentifier.value())))
-                .map(Neo4jPartyMapper::toDomain)
-                .collect(Collectors.toList());
+        return neo4jClient.query(
+                        "MATCH (p:Party) WHERE $type IN keys(p.registeredIdentifiers) AND p.registeredIdentifiers[$type] = $value RETURN p"
+                )
+                .bindAll(Map.of(
+                        "type", registeredIdentifier.getType(),
+                        "value", registeredIdentifier.getValue()
+                ))
+                .fetchAs(Map.class)
+                .all()
+                .stream()
+                .map(Neo4jPartyRepository::createPartyFrom)
+                .toList();
     }
 
     @Override
     public List<Party> findMatching(Predicate<Party> predicate) {
-        return neo4jPartySpringRepository.findAll().stream()
-                .map(Neo4jPartyMapper::toDomain)
+        return neo4jClient.query("MATCH (p:Party) RETURN p")
+                .fetchAs(Map.class)
+                .all()
+                .stream()
+                .map(Neo4jPartyRepository::createPartyFrom)
                 .filter(predicate)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    private static Party createPartyFrom(Map values) {
+        String type = (String) values.get("type");
+        return PARTY_FACTORY.create(type, values);
     }
 }

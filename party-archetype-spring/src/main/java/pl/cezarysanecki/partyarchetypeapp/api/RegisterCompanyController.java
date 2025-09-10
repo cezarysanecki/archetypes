@@ -10,6 +10,7 @@ import pl.cezarysanecki.partyarchetypeapp.application.RegisterCompanyUseCase;
 @RestController
 @RequestMapping("/api/companies")
 public class RegisterCompanyController {
+
     private final RegisterCompanyUseCase useCase;
 
     public RegisterCompanyController(RegisterCompanyUseCase useCase) {

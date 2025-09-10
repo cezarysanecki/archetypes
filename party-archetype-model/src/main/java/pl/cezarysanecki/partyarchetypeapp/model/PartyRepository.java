@@ -37,7 +37,7 @@ class InMemoryPartyRepository implements PartyRepository {
 
     @Override
     public void save(Party party) {
-        DATABASE.put(party.id(), party);
+        DATABASE.put(party.getPartyId(), party);
     }
 
     @Override
@@ -48,7 +48,7 @@ class InMemoryPartyRepository implements PartyRepository {
     @Override
     public List<Party> findBy(RegisteredIdentifier registeredIdentifier) {
         return DATABASE.values().parallelStream()
-                .filter(party -> party.registeredIdentifiers().contains(registeredIdentifier))
+                .filter(party -> party.getRegisteredIdentifiers().contains(registeredIdentifier))
                 .collect(Collectors.toList());
     }
 

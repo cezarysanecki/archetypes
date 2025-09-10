@@ -2,7 +2,7 @@ POST http://localhost:8080/api/persons
 Content-Type: application/json
 
 {
-  "firstName": "Wojtek",
+  "firstName": "Aaa",
   "lastName": "Majtek",
   "roles": ["EMPLOYER"],
   "registeredIdentifiers": [

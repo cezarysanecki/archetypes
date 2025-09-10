@@ -27,8 +27,8 @@ class RegisteredIdentifiersFactoryTest {
         RegisteredIdentifier result = sut.create("PERSONAL_IDENTIFICATION_NUMBER", "12345678901");
 
         //then
-        assertEquals("PERSONAL_IDENTIFICATION_NUMBER", result.type());
-        assertEquals("12345678901", result.value());
+        assertEquals("PERSONAL_IDENTIFICATION_NUMBER", result.getType());
+        assertEquals("12345678901", result.getValue());
     }
 
     private static boolean hasField(Class<? extends RegisteredIdentifier> clazz, String fieldName) {

@@ -60,9 +60,9 @@ class PartiesFacadeTest {
         assertInstanceOf(Person.class, party.get());
         //and
         Person resultParty = (Person) party.get();
-        assertEquals(personalData, resultParty.personalData());
-        assertEquals(Set.of(identifier), resultParty.registeredIdentifiers());
-        assertEquals(roles, resultParty.roles());
+        assertEquals(personalData, resultParty.getPersonalData());
+        assertEquals(Set.of(identifier), resultParty.getRegisteredIdentifiers());
+        assertEquals(roles, resultParty.getRoles());
     }
 
     @Test
@@ -103,9 +103,9 @@ class PartiesFacadeTest {
         assertInstanceOf(Company.class, party.get());
         //and
         Company resultParty = (Company) party.get();
-        assertEquals(organizationName, resultParty.organizationName());
-        assertEquals(Set.of(identifier), party.get().registeredIdentifiers());
-        assertEquals(roles, party.get().roles());
+        assertEquals(organizationName, resultParty.getOrganizationName());
+        assertEquals(Set.of(identifier), party.get().getRegisteredIdentifiers());
+        assertEquals(roles, party.get().getRoles());
     }
 
     @Test
@@ -146,9 +146,9 @@ class PartiesFacadeTest {
         assertInstanceOf(OrganizationUnit.class, party.get());
         //and
         OrganizationUnit resultParty = (OrganizationUnit) party.get();
-        assertEquals(organizationName, resultParty.organizationName());
-        assertEquals(Set.of(identifier), party.get().registeredIdentifiers());
-        assertEquals(roles, party.get().roles());
+        assertEquals(organizationName, resultParty.getOrganizationName());
+        assertEquals(Set.of(identifier), party.get().getRegisteredIdentifiers());
+        assertEquals(roles, party.get().getRoles());
     }
 
     @Test
@@ -179,12 +179,12 @@ class PartiesFacadeTest {
         Role newRole = someRole();
 
         //when
-        sut.add(party.id(), newRole);
+        sut.add(party.getPartyId(), newRole);
 
         //then
-        Optional<Party> updatedParty = partiesQueries.findBy(party.id());
+        Optional<Party> updatedParty = partiesQueries.findBy(party.getPartyId());
 
-        assertEquals(copyAndAdd(party.roles(), newRole), updatedParty.get().roles());
+        assertEquals(copyAndAdd(party.getRoles(), newRole), updatedParty.get().getRoles());
     }
 
     @Test
@@ -194,10 +194,10 @@ class PartiesFacadeTest {
         Role newRole = someRole();
 
         //when
-        sut.add(party.id(), newRole);
+        sut.add(party.getPartyId(), newRole);
 
         //then
-        RoleAdded expectedEvent = new RoleAdded(party.id().asString(), newRole.asString());
+        RoleAdded expectedEvent = new RoleAdded(party.getPartyId().asString(), newRole.asString());
         assertTrue(testEventListener.thereIsAnEventEqualTo(expectedEvent));
     }
 
@@ -208,12 +208,12 @@ class PartiesFacadeTest {
         Party party = testSupport.thereIs(somePerson().withRandomPartyId().with(roleToBeRemoved).build());
 
         //when
-        sut.remove(party.id(), roleToBeRemoved);
+        sut.remove(party.getPartyId(), roleToBeRemoved);
 
         //then
-        Optional<Party> updatedParty = partiesQueries.findBy(party.id());
+        Optional<Party> updatedParty = partiesQueries.findBy(party.getPartyId());
 
-        assertTrue(updatedParty.get().roles().isEmpty());
+        assertTrue(updatedParty.get().getRoles().isEmpty());
     }
 
     @Test
@@ -223,10 +223,10 @@ class PartiesFacadeTest {
         Party party = testSupport.thereIs(somePerson().withRandomPartyId().with(roleToBeRemoved).build());
 
         //when
-        sut.remove(party.id(), roleToBeRemoved);
+        sut.remove(party.getPartyId(), roleToBeRemoved);
 
         //then
-        RoleRemoved expectedEvent = new RoleRemoved(party.id().asString(), roleToBeRemoved.asString());
+        RoleRemoved expectedEvent = new RoleRemoved(party.getPartyId().asString(), roleToBeRemoved.asString());
         assertTrue(testEventListener.thereIsAnEventEqualTo(expectedEvent));
     }
 
@@ -237,12 +237,12 @@ class PartiesFacadeTest {
         RegisteredIdentifier newRegisteredIdentifier = someRegisteredIdentifier();
 
         //when
-        sut.add(party.id(), newRegisteredIdentifier);
+        sut.add(party.getPartyId(), newRegisteredIdentifier);
 
         //then
-        Optional<Party> updatedParty = partiesQueries.findBy(party.id());
+        Optional<Party> updatedParty = partiesQueries.findBy(party.getPartyId());
 
-        assertEquals(copyAndAdd(party.registeredIdentifiers(), newRegisteredIdentifier), updatedParty.get().registeredIdentifiers());
+        assertEquals(copyAndAdd(party.getRegisteredIdentifiers(), newRegisteredIdentifier), updatedParty.get().getRegisteredIdentifiers());
     }
 
     @Test
@@ -252,10 +252,10 @@ class PartiesFacadeTest {
         RegisteredIdentifier newRegisteredIdentifier = someRegisteredIdentifier();
 
         //when
-        sut.add(party.id(), newRegisteredIdentifier);
+        sut.add(party.getPartyId(), newRegisteredIdentifier);
 
         //then
-        RegisteredIdentifierAdded expectedEvent = new RegisteredIdentifierAdded(party.id().asString(), newRegisteredIdentifier.type(), newRegisteredIdentifier.asString());
+        RegisteredIdentifierAdded expectedEvent = new RegisteredIdentifierAdded(party.getPartyId().asString(), newRegisteredIdentifier.getType(), newRegisteredIdentifier.asString());
         assertTrue(testEventListener.thereIsAnEventEqualTo(expectedEvent));
     }
 
@@ -266,12 +266,12 @@ class PartiesFacadeTest {
         Party party = testSupport.thereIs(somePerson().withRandomPartyId().with(idToBeRemoved).build());
 
         //when
-        sut.remove(party.id(), idToBeRemoved);
+        sut.remove(party.getPartyId(), idToBeRemoved);
 
         //then
-        Optional<Party> updatedParty = partiesQueries.findBy(party.id());
+        Optional<Party> updatedParty = partiesQueries.findBy(party.getPartyId());
 
-        assertTrue(updatedParty.get().registeredIdentifiers().isEmpty());
+        assertTrue(updatedParty.get().getRegisteredIdentifiers().isEmpty());
     }
 
     @Test
@@ -281,10 +281,10 @@ class PartiesFacadeTest {
         Party party = testSupport.thereIs(somePerson().withRandomPartyId().with(idToBeRemoved).build());
 
         //when
-        sut.remove(party.id(), idToBeRemoved);
+        sut.remove(party.getPartyId(), idToBeRemoved);
 
         //then
-        RegisteredIdentifierRemoved expectedEvent = new RegisteredIdentifierRemoved(party.id().asString(), idToBeRemoved.type(), idToBeRemoved.asString());
+        RegisteredIdentifierRemoved expectedEvent = new RegisteredIdentifierRemoved(party.getPartyId().asString(), idToBeRemoved.getType(), idToBeRemoved.asString());
         assertTrue(testEventListener.thereIsAnEventEqualTo(expectedEvent));
     }
 

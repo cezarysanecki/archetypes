@@ -7,9 +7,9 @@ import static pl.cezarysanecki.partyarchetypeapp.common.Preconditions.checkNotNu
 
 public interface RegisteredIdentifier {
 
-    String type();
+    String getType();
 
-    String value();
+    String getValue();
 
 }
 
@@ -28,12 +28,12 @@ record PersonalIdentificationNumber(String value) implements RegisteredIdentifie
     }
 
     @Override
-    public String type() {
+    public String getType() {
         return TYPE;
     }
 
     @Override
-    public String value() {
+    public String getValue() {
         return value;
     }
 }

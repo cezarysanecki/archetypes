@@ -76,9 +76,9 @@ public abstract class Party {
 
         if (!registeredIdentifiers.contains(identifier)) {
             registeredIdentifiers.add(identifier);
-            events.add(new RegisteredIdentifierAdded(partyId.asString(), identifier.type(), identifier.value()));
+            events.add(new RegisteredIdentifierAdded(partyId.asString(), identifier.getType(), identifier.getValue()));
         } else {
-            events.add(RegisteredIdentifierAdditionSkipped.dueToDataDuplicationFor(partyId.asString(), identifier.type(), identifier.value()));
+            events.add(RegisteredIdentifierAdditionSkipped.dueToDataDuplicationFor(partyId.asString(), identifier.getType(), identifier.getValue()));
         }
         return Result.success(this);
     }
@@ -88,22 +88,22 @@ public abstract class Party {
 
         if (registeredIdentifiers.contains(identifier)) {
             registeredIdentifiers.remove(identifier);
-            events.add(new RegisteredIdentifierRemoved(partyId.asString(), identifier.type(), identifier.value()));
+            events.add(new RegisteredIdentifierRemoved(partyId.asString(), identifier.getType(), identifier.getValue()));
         } else {
-            events.add(RegisteredIdentifierRemovalSkipped.dueToMissingIdentifierFor(partyId.asString(), identifier.type(), identifier.value()));
+            events.add(RegisteredIdentifierRemovalSkipped.dueToMissingIdentifierFor(partyId.asString(), identifier.getType(), identifier.getValue()));
         }
         return Result.success(this);
     }
 
-    public PartyId id() {
+    public PartyId getPartyId() {
         return partyId;
     }
 
-    public Set<Role> roles() {
+    public Set<Role> getRoles() {
         return Set.copyOf(roles);
     }
 
-    public Set<RegisteredIdentifier> registeredIdentifiers() {
+    public Set<RegisteredIdentifier> getRegisteredIdentifiers() {
         return Set.copyOf(registeredIdentifiers);
     }
 
@@ -115,7 +115,7 @@ public abstract class Party {
         return events.stream().filter(PublishedEvent.class::isInstance).map(PublishedEvent.class::cast).toList();
     }
 
-    public Version version() {
+    public Version getVersion() {
         return version;
     }
 

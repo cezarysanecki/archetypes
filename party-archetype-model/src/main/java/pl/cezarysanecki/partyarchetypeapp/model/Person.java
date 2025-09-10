@@ -24,14 +24,14 @@ public final class Person extends Party {
         this.personalData = personalData;
     }
 
-    public PersonalData personalData() {
+    public PersonalData getPersonalData() {
         return this.personalData;
     }
 
     @Override
     PartyRegistered toPartyRegisteredEvent() {
-        return new PartyRegistered.PersonRegistered(id().asString(), personalData().firstName(), personalData().lastName(),
-                registeredIdentifiers().stream().map(RegisteredIdentifier::value).collect(toSet()),
-                roles().stream().map(Role::asString).collect(toSet()));
+        return new PartyRegistered.PersonRegistered(getPartyId().asString(), getPersonalData().firstName(), getPersonalData().lastName(),
+                getRegisteredIdentifiers().stream().map(RegisteredIdentifier::getValue).collect(toSet()),
+                getRoles().stream().map(Role::asString).collect(toSet()));
     }
 }

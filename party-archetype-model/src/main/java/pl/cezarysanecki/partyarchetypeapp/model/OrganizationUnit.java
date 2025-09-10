@@ -20,8 +20,8 @@ public final class OrganizationUnit extends Organization {
 
     @Override
     PartyRegistered toPartyRegisteredEvent() {
-        return new OrganizationUnitRegistered(id().asString(), organizationName().value(),
-                registeredIdentifiers().stream().map(RegisteredIdentifier::value).collect(toSet()),
-                roles().stream().map(Role::asString).collect(toSet()));
+        return new OrganizationUnitRegistered(getPartyId().asString(), getOrganizationName().value(),
+                getRegisteredIdentifiers().stream().map(RegisteredIdentifier::getValue).collect(toSet()),
+                getRoles().stream().map(Role::asString).collect(toSet()));
     }
 }

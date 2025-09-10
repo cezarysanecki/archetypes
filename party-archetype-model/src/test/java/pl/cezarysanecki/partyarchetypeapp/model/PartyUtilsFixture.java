@@ -82,12 +82,12 @@ final class RegisteredIdentifierFixture {
             private static final String VALUE = randomAlphabetic(10);
 
             @Override
-            public String type() {
+            public String getType() {
                 return TYPE;
             }
 
             @Override
-            public String value() {
+            public String getValue() {
                 return VALUE;
             }
         };
