@@ -10,11 +10,11 @@ import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRegistered.Co
 
 public final class Company extends Organization {
 
-    Company(PartyId partyId,
-            OrganizationName organizationName,
-            Set<Role> roles,
-            Set<RegisteredIdentifier> registeredIdentifiers,
-            Version version) {
+    public Company(PartyId partyId,
+                   OrganizationName organizationName,
+                   Set<Role> roles,
+                   Set<RegisteredIdentifier> registeredIdentifiers,
+                   Version version) {
         super(partyId, organizationName, roles, registeredIdentifiers, version);
     }
 

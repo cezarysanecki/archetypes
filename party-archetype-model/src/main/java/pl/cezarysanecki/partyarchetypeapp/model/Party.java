@@ -34,7 +34,7 @@ public abstract class Party {
     private final List<PartyRelatedEvent> events = new LinkedList<>();
     private final Version version;
 
-    Party(PartyId partyId, Set<Role> roles, Set<RegisteredIdentifier> registeredIdentifiers, Version version) {
+    public Party(PartyId partyId, Set<Role> roles, Set<RegisteredIdentifier> registeredIdentifiers, Version version) {
         checkArgument(partyId != null, "Party Id cannot be null");
         checkArgument(version != null, "Version cannot be null");
         checkArgument(roles != null, "Roles cannot be null");

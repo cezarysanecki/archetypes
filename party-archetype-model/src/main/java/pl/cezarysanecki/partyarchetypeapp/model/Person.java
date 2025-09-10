@@ -12,7 +12,11 @@ public final class Person extends Party {
 
     private final PersonalData personalData;
 
-    Person(PartyId id, PersonalData personalData, Set<Role> roles, Set<RegisteredIdentifier> registeredIdentifiers, Version version) {
+    public Person(PartyId id,
+                  PersonalData personalData,
+                  Set<Role> roles,
+                  Set<RegisteredIdentifier> registeredIdentifiers,
+                  Version version) {
         super(id, roles, registeredIdentifiers, version);
         
         checkArgument(personalData != null, "Personal data cannot be null");

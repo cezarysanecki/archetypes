@@ -24,7 +24,7 @@ public class PartiesFacade {
     private final PartyRoleFactory partyRoleFactory;
     private final Supplier<PartyId> newPartyIdSupplier;
 
-    PartiesFacade(PartyRepository partyRepository, EventPublisher eventPublisher, PartyRoleFactory partyRoleFactory, Supplier<PartyId> newPartyIdSupplier) {
+    public PartiesFacade(PartyRepository partyRepository, EventPublisher eventPublisher, PartyRoleFactory partyRoleFactory, Supplier<PartyId> newPartyIdSupplier) {
         this.partyRepository = partyRepository;
         this.eventPublisher = eventPublisher;
         this.partyRoleFactory = partyRoleFactory;
