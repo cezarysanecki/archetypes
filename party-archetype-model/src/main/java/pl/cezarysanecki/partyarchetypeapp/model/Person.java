@@ -27,7 +27,7 @@ public final class Person extends Party {
     @Override
     PartyRegistered toPartyRegisteredEvent() {
         return new PartyRegistered.PersonRegistered(id().asString(), personalData().firstName(), personalData().lastName(),
-                registeredIdentifiers().stream().map(RegisteredIdentifier::asString).collect(toSet()),
+                registeredIdentifiers().stream().map(RegisteredIdentifier::value).collect(toSet()),
                 roles().stream().map(Role::asString).collect(toSet()));
     }
 }

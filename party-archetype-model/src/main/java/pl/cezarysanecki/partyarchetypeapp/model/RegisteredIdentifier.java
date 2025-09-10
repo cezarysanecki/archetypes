@@ -9,7 +9,7 @@ public interface RegisteredIdentifier {
 
     String type();
 
-    String asString();
+    String value();
 
 }
 
@@ -20,7 +20,7 @@ record PersonalIdentificationNumber(String value) implements RegisteredIdentifie
 
     PersonalIdentificationNumber {
         checkNotNull(value, "Personal Identification Number cannot be null");
-        checkArgument(!PATTERN.matcher(value).matches(), "Personal identification number does not meet syntax criteria");
+        checkArgument(PATTERN.matcher(value).matches(), "Personal identification number does not meet syntax criteria");
     }
 
     static PersonalIdentificationNumber of(String value) {
@@ -33,7 +33,7 @@ record PersonalIdentificationNumber(String value) implements RegisteredIdentifie
     }
 
     @Override
-    public String asString() {
+    public String value() {
         return value;
     }
 }

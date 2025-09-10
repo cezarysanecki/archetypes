@@ -67,7 +67,7 @@ public class PartiesFacade {
         return partyRepository.findBy(partyId)
                 .map(party -> party.add(identifier))
                 .map(party -> party.mapFailure(PartyRelatedFailureEvent.class::cast))
-                .orElse(Result.failure(new RegisteredIdentifierAdditionFailed(partyId.asString(), identifier.asString(), "PARTY_NOT_FOUND")))
+                .orElse(Result.failure(new RegisteredIdentifierAdditionFailed(partyId.asString(), identifier.value(), "PARTY_NOT_FOUND")))
                 .peekSuccess(partyRepository::save)
                 .peekSuccess(party -> eventPublisher.publish(party.publishedEvents()));
     }
@@ -76,7 +76,7 @@ public class PartiesFacade {
         return partyRepository.findBy(partyId)
                 .map(party -> party.remove(identifier))
                 .map(party -> party.mapFailure(PartyRelatedFailureEvent.class::cast))
-                .orElse(Result.failure(new RegisteredIdentifierRemovalFailed(partyId.asString(), identifier.asString(), "PARTY_NOT_FOUND")))
+                .orElse(Result.failure(new RegisteredIdentifierRemovalFailed(partyId.asString(), identifier.value(), "PARTY_NOT_FOUND")))
                 .peekSuccess(partyRepository::save)
                 .peekSuccess(party -> eventPublisher.publish(party.publishedEvents()));
     }

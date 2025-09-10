@@ -87,7 +87,7 @@ final class RegisteredIdentifierFixture {
             }
 
             @Override
-            public String asString() {
+            public String value() {
                 return VALUE;
             }
         };

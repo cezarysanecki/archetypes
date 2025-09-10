@@ -21,7 +21,7 @@ public final class Company extends Organization {
     @Override
     PartyRegistered toPartyRegisteredEvent() {
         return new CompanyRegistered(id().asString(), organizationName().value(),
-                registeredIdentifiers().stream().map(RegisteredIdentifier::asString).collect(toSet()),
+                registeredIdentifiers().stream().map(RegisteredIdentifier::value).collect(toSet()),
                 roles().stream().map(Role::asString).collect(toSet()));
     }
 }

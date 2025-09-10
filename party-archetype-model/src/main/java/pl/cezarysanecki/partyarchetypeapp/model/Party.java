@@ -76,9 +76,9 @@ public abstract class Party {
 
         if (!registeredIdentifiers.contains(identifier)) {
             registeredIdentifiers.add(identifier);
-            events.add(new RegisteredIdentifierAdded(partyId.asString(), identifier.type(), identifier.asString()));
+            events.add(new RegisteredIdentifierAdded(partyId.asString(), identifier.type(), identifier.value()));
         } else {
-            events.add(RegisteredIdentifierAdditionSkipped.dueToDataDuplicationFor(partyId.asString(), identifier.type(), identifier.asString()));
+            events.add(RegisteredIdentifierAdditionSkipped.dueToDataDuplicationFor(partyId.asString(), identifier.type(), identifier.value()));
         }
         return Result.success(this);
     }
@@ -88,9 +88,9 @@ public abstract class Party {
 
         if (registeredIdentifiers.contains(identifier)) {
             registeredIdentifiers.remove(identifier);
-            events.add(new RegisteredIdentifierRemoved(partyId.asString(), identifier.type(), identifier.asString()));
+            events.add(new RegisteredIdentifierRemoved(partyId.asString(), identifier.type(), identifier.value()));
         } else {
-            events.add(RegisteredIdentifierRemovalSkipped.dueToMissingIdentifierFor(partyId.asString(), identifier.type(), identifier.asString()));
+            events.add(RegisteredIdentifierRemovalSkipped.dueToMissingIdentifierFor(partyId.asString(), identifier.type(), identifier.value()));
         }
         return Result.success(this);
     }
