@@ -11,15 +11,15 @@ import java.util.stream.Collectors;
 @Repository
 class Neo4jPartyRepository implements PartyRepository {
 
-    private final Neo4jPartySpringRepository springRepository;
+    private final Neo4jPartySpringRepository neo4jPartySpringRepository;
 
-    public Neo4jPartyRepository(Neo4jPartySpringRepository springRepository) {
-        this.springRepository = springRepository;
+    public Neo4jPartyRepository(Neo4jPartySpringRepository neo4jPartySpringRepository) {
+        this.neo4jPartySpringRepository = neo4jPartySpringRepository;
     }
 
     @Override
     public Optional<Party> findBy(PartyId partyId) {
-        return springRepository.findById(partyId.asString())
+        return neo4jPartySpringRepository.findById(partyId.asString())
                 .map(Neo4jPartyMapper::toDomain);
     }
 
@@ -30,17 +30,17 @@ class Neo4jPartyRepository implements PartyRepository {
 
     @Override
     public void save(Party party) {
-        springRepository.save(Neo4jPartyMapper.toEntity(party));
+        neo4jPartySpringRepository.save(Neo4jPartyMapper.toEntity(party));
     }
 
     @Override
     public void delete(PartyId partyId) {
-        springRepository.deleteById(partyId.asString());
+        neo4jPartySpringRepository.deleteById(partyId.asString());
     }
 
     @Override
     public List<Party> findBy(RegisteredIdentifier registeredIdentifier) {
-        return springRepository.findAll().stream()
+        return neo4jPartySpringRepository.findAll().stream()
                 .filter(e -> e.getRegisteredIdentifiers().entrySet().stream()
                         .anyMatch(entrySet -> entrySet.getKey().equals(registeredIdentifier.type()) && entrySet.getValue().equals(registeredIdentifier.value())))
                 .map(Neo4jPartyMapper::toDomain)
@@ -49,7 +49,7 @@ class Neo4jPartyRepository implements PartyRepository {
 
     @Override
     public List<Party> findMatching(Predicate<Party> predicate) {
-        return springRepository.findAll().stream()
+        return neo4jPartySpringRepository.findAll().stream()
                 .map(Neo4jPartyMapper::toDomain)
                 .filter(predicate)
                 .collect(Collectors.toList());
