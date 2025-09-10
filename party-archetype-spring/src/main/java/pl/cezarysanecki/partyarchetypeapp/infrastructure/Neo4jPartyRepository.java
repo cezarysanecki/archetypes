@@ -1,14 +1,19 @@
 package pl.cezarysanecki.partyarchetypeapp.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Repository;
+import pl.cezarysanecki.partyarchetypeapp.common.Version;
+import pl.cezarysanecki.partyarchetypeapp.model.OrganizationName;
 import pl.cezarysanecki.partyarchetypeapp.model.Party;
 import pl.cezarysanecki.partyarchetypeapp.model.PartyId;
 import pl.cezarysanecki.partyarchetypeapp.model.PartyRepository;
+import pl.cezarysanecki.partyarchetypeapp.model.PersonalData;
 import pl.cezarysanecki.partyarchetypeapp.model.RegisteredIdentifier;
+import pl.cezarysanecki.partyarchetypeapp.model.Role;
 import pl.cezarysanecki.partyarchetypeapp.utils.PartyFactory;
 
 import java.util.List;
@@ -21,7 +26,10 @@ class Neo4jPartyRepository implements PartyRepository {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Neo4jPartyRepository.class);
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(
+            new SimpleModule()
+                    .addSerializer(Party.class, new StdSerializers.PartySerializer())
+    );
     private final static PartyFactory PARTY_FACTORY = new PartyFactory();
 
     private final Neo4jClient neo4jClient;
@@ -48,8 +56,6 @@ class Neo4jPartyRepository implements PartyRepository {
     @Override
     public void save(Party party) {
         try {
-            LOGGER.info("Saving Party: {}", party);
-
             Map<String, Object> values = OBJECT_MAPPER.convertValue(party, Map.class);
             values.put("type", party.getClass().getSimpleName());
 
