@@ -14,7 +14,6 @@ import pl.cezarysanecki.partyarchetypeapp.utils.RegisteredIdentifiersFactory;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 class Neo4jPartyMapper {
@@ -58,17 +57,24 @@ class Neo4jPartyMapper {
     }
 
     static Party toDomain(Neo4jPartyEntity entity) {
-        Set<Role> roles = entity.getRoles().stream().map(Role::new).collect(Collectors.toSet());
-        Set<RegisteredIdentifier> ids = entity.getRegisteredIdentifiers().entrySet().stream()
-                .map(e -> REGISTERED_IDENTIFIERS_FACTORY.create(e.getKey(), e.getValue()))
+        Set<Role> roles = entity.roles.stream().map(Role::new).collect(Collectors.toSet());
+        Set<RegisteredIdentifier> ids = entity.registeredIdentifiers.entrySet().stream()
+                .map(entry -> REGISTERED_IDENTIFIERS_FACTORY.create(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toSet());
-        Version version = Version.of(entity.getVersion());
-        PartyId partyId = PartyId.of(UUID.fromString(entity.getId()));
-        return switch (entity.getType()) {
-            case "Person" -> new Person(partyId, new PersonalData(entity.getFirstName(), entity.getLastName()), roles, ids, version);
-            case "Company" -> new Company(partyId, new OrganizationName(entity.getOrganizationName()), roles, ids, version);
-            case "OrganizationUnit" -> new OrganizationUnit(partyId, new OrganizationName(entity.getOrganizationName()), roles, ids, version);
-            default -> throw new IllegalArgumentException("Unknown party type: " + entity.getType());
+        Version version = Version.of(entity.version);
+        PartyId partyId = PartyId.of(entity.id);
+
+        return switch (entity.type) {
+            case "Person" -> new Person(
+                    partyId, new PersonalData(entity.firstName, entity.lastName), roles, ids, version
+            );
+            case "Company" -> new Company(
+                    partyId, new OrganizationName(entity.organizationName), roles, ids, version
+            );
+            case "OrganizationUnit" -> new OrganizationUnit(
+                    partyId, new OrganizationName(entity.organizationName), roles, ids, version
+            );
+            default -> throw new IllegalArgumentException("Unknown party type: " + entity.type);
         };
     }
 }

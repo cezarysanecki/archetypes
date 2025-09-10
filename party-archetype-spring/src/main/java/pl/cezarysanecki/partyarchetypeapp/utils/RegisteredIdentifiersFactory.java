@@ -9,23 +9,26 @@ import java.util.Set;
 
 public class RegisteredIdentifiersFactory {
 
+    static final String BASE_PACKAGE = "pl.cezarysanecki.partyarchetypeapp.model";
+    static final Reflections REFLECTIONS = new Reflections(BASE_PACKAGE);
+
     public RegisteredIdentifier create(String type, String number) {
-        Class<? extends RegisteredIdentifier> clazz = findRegisteredIdentifierSubclassByType(type);
-        if (clazz != null) {
-            try {
-                Constructor<? extends RegisteredIdentifier> constructor = clazz.getDeclaredConstructor(String.class);
-                constructor.setAccessible(true);
-                return constructor.newInstance(number);
-            } catch (Exception e) {
-                throw new RuntimeException("Cannot create RegisteredIdentifier instance " + clazz.getSimpleName(), e);
-            }
+        Class<? extends RegisteredIdentifier> clazz = findSubclassBy(type);
+        if (clazz == null) {
+            throw new IllegalArgumentException("No RegisteredIdentifier subclass found for type: " + type);
         }
-        return null;
+
+        try {
+            Constructor<? extends RegisteredIdentifier> constructor = clazz.getDeclaredConstructor(String.class);
+            constructor.setAccessible(true);
+            return constructor.newInstance(number);
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot create RegisteredIdentifier instance " + clazz.getSimpleName(), e);
+        }
     }
 
-    private Class<? extends RegisteredIdentifier> findRegisteredIdentifierSubclassByType(String type) {
-        Reflections reflections = new Reflections("pl.cezarysanecki.partyarchetypeapp.model");
-        Set<Class<? extends RegisteredIdentifier>> subclasses = reflections.getSubTypesOf(RegisteredIdentifier.class);
+    private Class<? extends RegisteredIdentifier> findSubclassBy(String type) {
+        Set<Class<? extends RegisteredIdentifier>> subclasses = REFLECTIONS.getSubTypesOf(RegisteredIdentifier.class);
 
         for (Class<?> subclass : subclasses) {
             try {
