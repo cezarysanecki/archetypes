@@ -7,18 +7,18 @@ import java.util.function.Supplier;
 import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.PartyRelationshipDefinitionFailed;
 import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.PartyRelationshipDefinitionFailed.dueToPoliciesNotMet;
 
-class PartyRelationshipFactory {
+public class PartyRelationshipFactory {
 
     private static final PartyRelationshipDefiningPolicy DEFAULT_PARTY_RELATIONSHIP_DEFINING_POLICY = new AlwaysAllowPartyRelationshipDefiningPolicy();
     private final PartyRelationshipDefiningPolicy policy;
     private final Supplier<PartyRelationshipId> partyRelationshipIdSupplier;
 
-    PartyRelationshipFactory(PartyRelationshipDefiningPolicy policy, Supplier<PartyRelationshipId> partyRelationshipIdSupplier) {
+    public PartyRelationshipFactory(PartyRelationshipDefiningPolicy policy, Supplier<PartyRelationshipId> partyRelationshipIdSupplier) {
         this.policy = policy != null ? policy : DEFAULT_PARTY_RELATIONSHIP_DEFINING_POLICY;
         this.partyRelationshipIdSupplier = partyRelationshipIdSupplier != null ? partyRelationshipIdSupplier : PartyRelationshipId::random;
     }
 
-    PartyRelationshipFactory(Supplier<PartyRelationshipId> partyRelationshipIdSupplier) {
+    public PartyRelationshipFactory(Supplier<PartyRelationshipId> partyRelationshipIdSupplier) {
         this(null, partyRelationshipIdSupplier);
     }
 

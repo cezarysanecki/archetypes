@@ -18,7 +18,7 @@ public class PartyRelationshipsFacade {
     private final PartyRelationshipRepository repository;
     private final EventPublisher eventPublisher;
 
-    PartyRelationshipsFacade(PartiesFacade partiesFacade, PartyRelationshipFactory partyRelationshipFactory, PartyRelationshipRepository repository, EventPublisher eventPublisher) {
+    public PartyRelationshipsFacade(PartiesFacade partiesFacade, PartyRelationshipFactory partyRelationshipFactory, PartyRelationshipRepository repository, EventPublisher eventPublisher) {
         this.partiesFacade = partiesFacade;
         this.partyRelationshipFactory = partyRelationshipFactory;
         this.repository = repository;
