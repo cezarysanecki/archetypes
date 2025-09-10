@@ -41,7 +41,8 @@ class Neo4jPartyRepository implements PartyRepository {
     @Override
     public List<Party> findBy(RegisteredIdentifier registeredIdentifier) {
         return springRepository.findAll().stream()
-                .filter(e -> e.getRegisteredIdentifiers().contains(registeredIdentifier.value()))
+                .filter(e -> e.getRegisteredIdentifiers().stream()
+                        .anyMatch(id -> id.getType().equals(registeredIdentifier.type()) && id.getValue().equals(registeredIdentifier.value())))
                 .map(Neo4jPartyMapper::toDomain)
                 .collect(Collectors.toList());
     }
@@ -54,4 +55,3 @@ class Neo4jPartyRepository implements PartyRepository {
                 .collect(Collectors.toList());
     }
 }
-
