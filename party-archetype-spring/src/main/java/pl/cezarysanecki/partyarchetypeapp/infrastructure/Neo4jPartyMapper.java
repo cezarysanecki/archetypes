@@ -1,5 +1,6 @@
 package pl.cezarysanecki.partyarchetypeapp.infrastructure;
 
+import pl.cezarysanecki.partyarchetypeapp.common.Version;
 import pl.cezarysanecki.partyarchetypeapp.model.Company;
 import pl.cezarysanecki.partyarchetypeapp.model.OrganizationUnit;
 import pl.cezarysanecki.partyarchetypeapp.model.Party;
@@ -7,7 +8,6 @@ import pl.cezarysanecki.partyarchetypeapp.model.PartyId;
 import pl.cezarysanecki.partyarchetypeapp.model.Person;
 import pl.cezarysanecki.partyarchetypeapp.model.RegisteredIdentifier;
 import pl.cezarysanecki.partyarchetypeapp.model.Role;
-import pl.cezarysanecki.partyarchetypeapp.common.Version;
 import pl.cezarysanecki.partyarchetypeapp.utils.RegisteredIdentifiersFactory;
 
 import java.util.Set;
@@ -19,6 +19,17 @@ class Neo4jPartyMapper {
     private static final RegisteredIdentifiersFactory REGISTERED_IDENTIFIERS_FACTORY = new RegisteredIdentifiersFactory();
 
     static Neo4jPartyEntity toEntity(Party party) {
+        String firstName = null;
+        String lastName = null;
+        String organizationName = null;
+        if (party instanceof Person person) {
+            firstName = person.personalData().firstName();
+            lastName = person.personalData().lastName();
+        } else if (party instanceof Company company) {
+            organizationName = company.organizationName().value();
+        } else if (party instanceof OrganizationUnit orgUnit) {
+            organizationName = orgUnit.organizationName().value();
+        }
         return new Neo4jPartyEntity(
                 party.id().asString(),
                 party.getClass().getSimpleName(),
@@ -26,7 +37,10 @@ class Neo4jPartyMapper {
                 party.registeredIdentifiers().stream()
                         .map(id -> new Neo4jPartyEntity.Neo4jRegisteredIdentifierEntity(id.type(), id.value()))
                         .collect(Collectors.toSet()),
-                party.version().toString()
+                party.version().toString(),
+                firstName,
+                lastName,
+                organizationName
         );
     }
 

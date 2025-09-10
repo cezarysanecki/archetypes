@@ -15,16 +15,22 @@ class Neo4jPartyEntity {
     private Set<String> roles;
     @Relationship(type = "HAS_IDENTIFIER")
     private Set<Neo4jRegisteredIdentifierEntity> registeredIdentifiers;
+    private String firstName;
+    private String lastName;
+    private String organizationName;
     private String version;
 
-    protected Neo4jPartyEntity() {}
+    public Neo4jPartyEntity() {}
 
-    Neo4jPartyEntity(String id, String type, Set<String> roles, Set<Neo4jRegisteredIdentifierEntity> registeredIdentifiers, String version) {
+    Neo4jPartyEntity(String id, String type, Set<String> roles, Set<Neo4jRegisteredIdentifierEntity> registeredIdentifiers, String version, String firstName, String lastName, String organizationName) {
         this.id = id;
         this.type = type;
         this.roles = roles;
         this.registeredIdentifiers = registeredIdentifiers;
         this.version = version;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.organizationName = organizationName;
     }
 
     public String getId() { return id; }
@@ -37,6 +43,12 @@ class Neo4jPartyEntity {
     public void setRegisteredIdentifiers(Set<Neo4jRegisteredIdentifierEntity> registeredIdentifiers) { this.registeredIdentifiers = registeredIdentifiers; }
     public String getVersion() { return version; }
     public void setVersion(String version) { this.version = version; }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    public String getOrganizationName() { return organizationName; }
+    public void setOrganizationName(String organizationName) { this.organizationName = organizationName; }
 
     @Node("RegisteredIdentifier")
     public static class Neo4jRegisteredIdentifierEntity {
