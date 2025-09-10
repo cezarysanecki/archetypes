@@ -2,10 +2,10 @@ POST http://localhost:8080/api/relationships
 Content-Type: application/json
 
 {
-  "fromId": "33d6acc1-7fe8-4f67-8603-1ddebbb37013",
-  "fromRole": "EMPLOYEE",
-  "toId": "445d2e43-8299-47c4-bfa4-612cb164bef6",
-  "toRole": "EMPLOYEER",
-  "name": "worksFor"
+  "fromId": "3d1f1f7e-ce71-49f1-a2c9-4d82436ff5d0",
+  "fromRole": "A",
+  "toId": "44ba70bc-3e14-4532-afbc-31f6bd471e31",
+  "toRole": "B",
+  "name": "JUST_TRY"
 }
 

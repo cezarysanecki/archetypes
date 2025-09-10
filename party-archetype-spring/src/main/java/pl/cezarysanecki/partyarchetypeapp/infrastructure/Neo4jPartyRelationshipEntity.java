@@ -8,38 +8,43 @@ import org.springframework.data.neo4j.core.schema.TargetNode;
 class Neo4jPartyRelationshipEntity {
 
     @RelationshipId
-    private String id;
+    private Long id;
+    private String relationshipId;
     private String relationshipName;
 
-    @TargetNode
-    private Neo4jPartyEntity from;
+    private String from;
     private String fromRole;
+    private String to;
+    private String toRole;
 
     @TargetNode
-    private Neo4jPartyEntity to;
-    private String toRole;
+    private Neo4jPartyEntity toEntity;
 
     public Neo4jPartyRelationshipEntity() {
     }
 
-    Neo4jPartyRelationshipEntity(String id, String relationshipName, Neo4jPartyEntity from, String fromRole, Neo4jPartyEntity to, String toRole) {
-        this.id = id;
+    Neo4jPartyRelationshipEntity(String relationshipId, String relationshipName, String from, String fromRole, String to, String toRole, Neo4jPartyEntity toEntity) {
+        this.relationshipId = relationshipId;
         this.relationshipName = relationshipName;
-        this.from = from;
         this.fromRole = fromRole;
         this.to = to;
         this.toRole = toRole;
+        this.toEntity = toEntity;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
+    }
+
+    public String getRelationShipId() {
+        return relationshipId;
     }
 
     public String getRelationshipName() {
         return relationshipName;
     }
 
-    public Neo4jPartyEntity getFrom() {
+    public String getFrom() {
         return from;
     }
 
@@ -47,11 +52,15 @@ class Neo4jPartyRelationshipEntity {
         return fromRole;
     }
 
-    public Neo4jPartyEntity getTo() {
+    public String getTo() {
         return to;
     }
 
     public String getToRole() {
         return toRole;
+    }
+
+    public Neo4jPartyEntity getToEntity() {
+        return toEntity;
     }
 }

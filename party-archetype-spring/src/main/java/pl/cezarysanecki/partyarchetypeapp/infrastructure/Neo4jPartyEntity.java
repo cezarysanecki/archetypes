@@ -3,7 +3,10 @@ package pl.cezarysanecki.partyarchetypeapp.infrastructure;
 import org.springframework.data.neo4j.core.schema.CompositeProperty;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,6 +24,9 @@ class Neo4jPartyEntity {
     private String organizationName;
     private Long version;
 
+    @Relationship(type = "Relationship", direction = Relationship.Direction.OUTGOING)
+    private Set<Neo4jPartyRelationshipEntity> relationships = new HashSet<>();
+
     public Neo4jPartyEntity() {
     }
 
@@ -33,6 +39,10 @@ class Neo4jPartyEntity {
         this.firstName = firstName;
         this.lastName = lastName;
         this.organizationName = organizationName;
+    }
+
+    public void addRelationship(Neo4jPartyRelationshipEntity relationship) {
+        this.relationships.add(relationship);
     }
 
     public String getId() {
@@ -97,5 +107,13 @@ class Neo4jPartyEntity {
 
     public void setOrganizationName(String organizationName) {
         this.organizationName = organizationName;
+    }
+
+    public Set<Neo4jPartyRelationshipEntity> getRelationships() {
+        return relationships;
+    }
+
+    public void setRelationships(Set<Neo4jPartyRelationshipEntity> relationships) {
+        this.relationships = relationships;
     }
 }
