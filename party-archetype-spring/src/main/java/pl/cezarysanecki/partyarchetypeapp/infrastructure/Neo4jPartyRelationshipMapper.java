@@ -23,6 +23,7 @@ class Neo4jPartyRelationshipMapper {
 
     static Neo4jPartyRelationshipEntity toEntity(PartyRelationship relationship, Neo4jPartyEntity from, Neo4jPartyEntity to) {
         return new Neo4jPartyRelationshipEntity(
+                relationship.id().asString(),
                 relationship.name().value(),
                 from,
                 relationship.from().role().name(),

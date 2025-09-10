@@ -19,12 +19,12 @@ class Neo4jPartyEntity {
     private String firstName;
     private String lastName;
     private String organizationName;
-    private String version;
+    private Long version;
 
     public Neo4jPartyEntity() {
     }
 
-    Neo4jPartyEntity(String id, String type, Set<String> roles, Map<String, String> registeredIdentifiers, String version, String firstName, String lastName, String organizationName) {
+    Neo4jPartyEntity(String id, String type, Set<String> roles, Map<String, String> registeredIdentifiers, Long version, String firstName, String lastName, String organizationName) {
         this.id = id;
         this.type = type;
         this.roles = roles;
@@ -67,11 +67,11 @@ class Neo4jPartyEntity {
         this.registeredIdentifiers = registeredIdentifiers;
     }
 
-    public String getVersion() {
+    public Long getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(Long version) {
         this.version = version;
     }
 

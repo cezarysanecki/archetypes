@@ -22,7 +22,8 @@ class Neo4jPartyRelationshipEntity {
     public Neo4jPartyRelationshipEntity() {
     }
 
-    Neo4jPartyRelationshipEntity(String relationshipName, Neo4jPartyEntity from, String fromRole, Neo4jPartyEntity to, String toRole) {
+    Neo4jPartyRelationshipEntity(String id, String relationshipName, Neo4jPartyEntity from, String fromRole, Neo4jPartyEntity to, String toRole) {
+        this.id = id;
         this.relationshipName = relationshipName;
         this.from = from;
         this.fromRole = fromRole;
@@ -42,7 +43,7 @@ class Neo4jPartyRelationshipEntity {
         return from;
     }
 
-    public  String getFromRole() {
+    public String getFromRole() {
         return fromRole;
     }
 
@@ -50,7 +51,7 @@ class Neo4jPartyRelationshipEntity {
         return to;
     }
 
-    public  String getToRole() {
+    public String getToRole() {
         return toRole;
     }
 }

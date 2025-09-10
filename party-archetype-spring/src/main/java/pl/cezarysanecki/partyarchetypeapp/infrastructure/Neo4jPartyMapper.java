@@ -2,10 +2,12 @@ package pl.cezarysanecki.partyarchetypeapp.infrastructure;
 
 import pl.cezarysanecki.partyarchetypeapp.common.Version;
 import pl.cezarysanecki.partyarchetypeapp.model.Company;
+import pl.cezarysanecki.partyarchetypeapp.model.OrganizationName;
 import pl.cezarysanecki.partyarchetypeapp.model.OrganizationUnit;
 import pl.cezarysanecki.partyarchetypeapp.model.Party;
 import pl.cezarysanecki.partyarchetypeapp.model.PartyId;
 import pl.cezarysanecki.partyarchetypeapp.model.Person;
+import pl.cezarysanecki.partyarchetypeapp.model.PersonalData;
 import pl.cezarysanecki.partyarchetypeapp.model.RegisteredIdentifier;
 import pl.cezarysanecki.partyarchetypeapp.model.Role;
 import pl.cezarysanecki.partyarchetypeapp.utils.RegisteredIdentifiersFactory;
@@ -42,12 +44,13 @@ class Neo4jPartyMapper {
                         RegisteredIdentifier::type,
                         RegisteredIdentifier::value
                 ));
+
         return new Neo4jPartyEntity(
                 party.id().asString(),
                 party.getClass().getSimpleName(),
                 party.roles().stream().map(Role::name).collect(Collectors.toSet()),
                 registeredIdentifiers,
-                party.version().toString(),
+                party.version().value(),
                 firstName,
                 lastName,
                 organizationName
@@ -59,12 +62,12 @@ class Neo4jPartyMapper {
         Set<RegisteredIdentifier> ids = entity.getRegisteredIdentifiers().entrySet().stream()
                 .map(e -> REGISTERED_IDENTIFIERS_FACTORY.create(e.getKey(), e.getValue()))
                 .collect(Collectors.toSet());
-        Version version = Version.of(Long.parseLong(entity.getVersion()));
+        Version version = Version.of(entity.getVersion());
         PartyId partyId = PartyId.of(UUID.fromString(entity.getId()));
         return switch (entity.getType()) {
-            case "Person" -> new Person(partyId, null, roles, ids, version);
-            case "Company" -> new Company(partyId, null, roles, ids, version);
-            case "OrganizationUnit" -> new OrganizationUnit(partyId, null, roles, ids, version);
+            case "Person" -> new Person(partyId, new PersonalData(entity.getFirstName(), entity.getLastName()), roles, ids, version);
+            case "Company" -> new Company(partyId, new OrganizationName(entity.getOrganizationName()), roles, ids, version);
+            case "OrganizationUnit" -> new OrganizationUnit(partyId, new OrganizationName(entity.getOrganizationName()), roles, ids, version);
             default -> throw new IllegalArgumentException("Unknown party type: " + entity.getType());
         };
     }

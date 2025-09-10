@@ -11,11 +11,16 @@ import pl.cezarysanecki.partyarchetypeapp.model.PartyRoleFactory;
 @Configuration
 public class PartiesConfig {
 
+    private final PartyRepository partyRepository;
+    private final EventPublisher eventPublisher;
+
+    public PartiesConfig(PartyRepository partyRepository, EventPublisher eventPublisher) {
+        this.partyRepository = partyRepository;
+        this.eventPublisher = eventPublisher;
+    }
+
     @Bean
-    PartiesFacade partiesFacade(
-            PartyRepository partyRepository,
-            EventPublisher eventPublisher
-    ) {
+    PartiesFacade partiesFacade() {
         return new PartiesFacade(
                 partyRepository,
                 eventPublisher,
