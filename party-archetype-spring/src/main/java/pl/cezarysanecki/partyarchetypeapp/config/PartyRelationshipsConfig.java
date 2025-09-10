@@ -20,7 +20,7 @@ public class PartyRelationshipsConfig {
     ) {
         return new PartyRelationshipsFacade(
                 partiesFacade,
-                new PartyRelationshipFactory(() -> PartyRelationshipId::random),
+                new PartyRelationshipFactory(PartyRelationshipId::random),
                 partyRelationshipRepository,
                 eventPublisher
         );
