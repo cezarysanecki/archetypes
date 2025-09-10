@@ -1,0 +1,11 @@
+POST http://localhost:8080/api/organization-units
+Content-Type: application/json
+
+{
+  "name": "Dział IT",
+  "roles": ["DEPARTMENT"],
+  "registeredIdentifiers": [
+    { "type": "INTERNAL_CODE", "number": "IT-001" }
+  ]
+}
+

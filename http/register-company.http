@@ -1,0 +1,13 @@
+### Rejestracja firmy
+POST http://localhost:8080/api/companies
+Content-Type: application/json
+
+{
+  "name": "Acme Sp. z o.o.",
+  "roles": ["SUPPLIER", "CONTRACTOR"],
+  "registeredIdentifiers": [
+    { "type": "NIP", "number": "1234567890" },
+    { "type": "REGON", "number": "098765432" }
+  ]
+}
+

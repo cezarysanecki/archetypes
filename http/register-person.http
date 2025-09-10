@@ -1,0 +1,12 @@
+POST http://localhost:8080/api/persons
+Content-Type: application/json
+
+{
+  "firstName": "Paweł",
+  "lastName": "Żurek",
+  "roles": ["EMPLOYEER", "ADMIN"],
+  "registeredIdentifiers": [
+    { "type": "PERSONAL_IDENTIFICATION_NUMBER", "number": "12345678988" }
+  ]
+}
+
