@@ -5,7 +5,7 @@ import pl.cezarysanecki.partyarchetypeapp.common.Result;
 import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.PartyRoleDefinitionFailed;
 import static pl.cezarysanecki.partyarchetypeapp.model.events.PartyRelatedFailureEvent.PartyRoleDefinitionFailed.dueToPoliciesNotMet;
 
-class PartyRoleFactory {
+public class PartyRoleFactory {
 
     private static final PartyRoleDefiningPolicy DEFAULT_PARTY_ROLE_DEFINING_POLICY = new AlwaysAllowPartyRoleDefiningPolicy();
 
@@ -15,7 +15,7 @@ class PartyRoleFactory {
         this.policy = policy != null ? policy : DEFAULT_PARTY_ROLE_DEFINING_POLICY;
     }
 
-    PartyRoleFactory() {
+    public PartyRoleFactory() {
         this(null);
     }
 

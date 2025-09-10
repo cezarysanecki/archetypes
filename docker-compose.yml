@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  neo4j:
+    image: neo4j:5.18
+    container_name: neo4j
+    environment:
+      - NEO4J_AUTH=neo4j/test
+    ports:
+      - 7474:7474 # HTTP
+      - 7687:7687 # Bolt
+    volumes:
+      - neo4j_data:/data
+
+  app:
+    build: .
+    container_name: party-archetype-app
+    depends_on:
+      - neo4j
+    environment:
+      - SPRING_NEO4J_URI=bolt://neo4j:7687
+      - SPRING_NEO4J_AUTHENTICATION_USERNAME=neo4j
+      - SPRING_NEO4J_AUTHENTICATION_PASSWORD=test
+    ports:
+      - 8080:8080
+    restart: on-failure
+
+volumes:
+  neo4j_data:
+
