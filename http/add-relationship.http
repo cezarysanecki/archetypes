@@ -1,0 +1,11 @@
+POST http://localhost:8080/api/relationships
+Content-Type: application/json
+
+{
+  "fromId": "00000000-0000-0000-0000-000000000001",
+  "fromRole": "OWNER",
+  "toId": "00000000-0000-0000-0000-000000000002",
+  "toRole": "EMPLOYEE",
+  "name": "worksFor"
+}
+
