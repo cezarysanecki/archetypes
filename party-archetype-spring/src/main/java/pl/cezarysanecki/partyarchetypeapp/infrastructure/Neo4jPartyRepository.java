@@ -16,16 +16,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import static pl.cezarysanecki.partyarchetypeapp.infrastructure.PartyStd.PARTY_MODULE;
+
 @Repository
 class Neo4jPartyRepository implements PartyRepository {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Neo4jPartyRepository.class);
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-            .registerModule(
-                    new SimpleModule()
-                            .addSerializer(Party.class, new PartyStd.Serializer())
-                            .addDeserializer(Party.class, new PartyStd.Deserializer())
-            );
+            .registerModule(PARTY_MODULE);
 
     private final Neo4jClient neo4jClient;
 

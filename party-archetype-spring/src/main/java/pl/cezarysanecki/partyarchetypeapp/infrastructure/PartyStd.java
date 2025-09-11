@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import pl.cezarysanecki.partyarchetypeapp.common.Version;
 import pl.cezarysanecki.partyarchetypeapp.model.Company;
@@ -27,6 +29,10 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 class PartyStd {
+
+    static final Module PARTY_MODULE = new SimpleModule()
+            .addSerializer(Party.class, new Serializer())
+            .addDeserializer(Party.class, new Deserializer());
 
     private static final PartyFactory PARTY_FACTORY = new PartyFactory();
     private static final RegisteredIdentifiersFactory REGISTERED_IDENTIFIERS_FACTORY = new RegisteredIdentifiersFactory();

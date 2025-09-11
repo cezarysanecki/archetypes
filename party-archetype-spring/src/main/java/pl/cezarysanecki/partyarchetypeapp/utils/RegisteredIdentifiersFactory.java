@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class RegisteredIdentifiersFactory {
 
-    static final String BASE_PACKAGE = "pl.cezarysanecki.partyarchetypeapp.model";
+    static final String BASE_PACKAGE = "pl.cezarysanecki.partyarchetypeapp";
     static final Reflections REFLECTIONS = new Reflections(BASE_PACKAGE);
 
     public RegisteredIdentifier create(String type, String number) {

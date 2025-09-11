@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import pl.cezarysanecki.partyarchetypeapp.model.PartyId;
 import pl.cezarysanecki.partyarchetypeapp.model.PartyRelationship;
@@ -17,6 +19,10 @@ import pl.cezarysanecki.partyarchetypeapp.model.Role;
 import java.io.IOException;
 
 class PartyRelationshipStd {
+
+    static final Module PARTY_RELATIONSHOP_MODULE = new SimpleModule()
+            .addSerializer(PartyRelationship.class, new PartyRelationshipStd.Serializer())
+            .addDeserializer(PartyRelationship.class, new PartyRelationshipStd.Deserializer());
 
     static class Serializer extends StdSerializer<PartyRelationship> {
         public Serializer() {

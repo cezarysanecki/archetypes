@@ -23,11 +23,7 @@ class Neo4jPartyRelationshipRepository implements PartyRelationshipRepository {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Neo4jPartyRelationshipRepository.class);
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-            .registerModule(
-                    new SimpleModule()
-                            .addSerializer(PartyRelationship.class, new PartyRelationshipStd.Serializer())
-                            .addDeserializer(PartyRelationship.class, new PartyRelationshipStd.Deserializer())
-            );
+            .registerModule(PartyRelationshipStd.PARTY_RELATIONSHOP_MODULE);
 
     private final Neo4jClient neo4jClient;
 
