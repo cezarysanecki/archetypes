@@ -21,7 +21,7 @@ public class PartyRoleFactory {
 
     Result<PartyRoleDefinitionFailed, PartyRole> defineFor(Party party, Role role) {
         if (policy.canDefineFor(party, role)) {
-            return Result.success(PartyRole.of(party.getPartyId(), role));
+            return Result.success(PartyRole.of(party.partyId(), role));
         } else {
             return Result.failure(dueToPoliciesNotMet());
         }

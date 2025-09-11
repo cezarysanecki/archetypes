@@ -3,10 +3,8 @@ package pl.cezarysanecki.partyarchetypeapp.infrastructure;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import pl.cezarysanecki.partyarchetypeapp.common.Version;
 import pl.cezarysanecki.partyarchetypeapp.model.OrganizationName;
 import pl.cezarysanecki.partyarchetypeapp.model.Party;
-import pl.cezarysanecki.partyarchetypeapp.model.PartyId;
 import pl.cezarysanecki.partyarchetypeapp.model.PersonalData;
 import pl.cezarysanecki.partyarchetypeapp.model.RegisteredIdentifier;
 import pl.cezarysanecki.partyarchetypeapp.model.Role;
@@ -25,21 +23,21 @@ class StdSerializers {
         @Override
         public void serialize(Party value, JsonGenerator gen, SerializerProvider provider) throws IOException {
             gen.writeStartObject();
-            gen.writeStringField("id", value.getPartyId().asString());
+            gen.writeStringField("id", value.partyId().asString());
 
-            for (RegisteredIdentifier registeredIdentifier : value.getRegisteredIdentifiers()) {
+            for (RegisteredIdentifier registeredIdentifier : value.registeredIdentifiers()) {
                 gen.writeStringField("registeredIdentifiers." + registeredIdentifier.getType(), registeredIdentifier.getValue());
             }
 
             gen.writeArrayFieldStart("roles");
-            for (Role role : value.getRoles()) {
+            for (Role role : value.roles()) {
                 gen.writeString(role.name());
             }
             gen.writeEndArray();
 
             try {
-                if (value.getClass().getMethod("getPersonalData") != null) {
-                    Method method = value.getClass().getMethod("getPersonalData");
+                if (value.getClass().getMethod("personalData") != null) {
+                    Method method = value.getClass().getMethod("personalData");
                     Object returnValue = method.invoke(value);
                     if (returnValue instanceof PersonalData personalData) {
                         gen.writeStringField("firstName", personalData.firstName());
@@ -49,8 +47,8 @@ class StdSerializers {
             } catch (Exception e) {
             }
             try {
-                if (value.getClass().getMethod("getOrganizationName") != null) {
-                    Method method = value.getClass().getMethod("getOrganizationName");
+                if (value.getClass().getMethod("organizationName") != null) {
+                    Method method = value.getClass().getMethod("organizationName");
                     Object returnValue = method.invoke(value);
                     if (returnValue instanceof OrganizationName organizationName) {
                         gen.writeStringField("organizationName", organizationName.value());
@@ -60,7 +58,7 @@ class StdSerializers {
             }
 
             gen.writeStringField("type", value.getClass().getSimpleName());
-            gen.writeNumberField("version", value.getVersion().value());
+            gen.writeNumberField("version", value.version().value());
             gen.writeEndObject();
         }
     }

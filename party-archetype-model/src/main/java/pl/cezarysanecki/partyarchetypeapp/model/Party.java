@@ -95,15 +95,15 @@ public abstract class Party {
         return Result.success(this);
     }
 
-    public PartyId getPartyId() {
+    public PartyId partyId() {
         return partyId;
     }
 
-    public Set<Role> getRoles() {
+    public Set<Role> roles() {
         return Set.copyOf(roles);
     }
 
-    public Set<RegisteredIdentifier> getRegisteredIdentifiers() {
+    public Set<RegisteredIdentifier> registeredIdentifiers() {
         return Set.copyOf(registeredIdentifiers);
     }
 
@@ -115,7 +115,7 @@ public abstract class Party {
         return events.stream().filter(PublishedEvent.class::isInstance).map(PublishedEvent.class::cast).toList();
     }
 
-    public Version getVersion() {
+    public Version version() {
         return version;
     }
 
