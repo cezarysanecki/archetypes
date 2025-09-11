@@ -33,9 +33,9 @@ class PartyRelationshipStd {
         public void serialize(PartyRelationship value, JsonGenerator gen, SerializerProvider provider) throws IOException {
             gen.writeStartObject();
             gen.writeStringField("id", value.id().asString());
-            gen.writeStringField("fromPartyId", value.from().partyId().asString());
+            gen.writeStringField("from", value.from().partyId().asString());
             gen.writeStringField("fromRole", value.from().role().name());
-            gen.writeStringField("toPartyId", value.to().partyId().asString());
+            gen.writeStringField("to", value.to().partyId().asString());
             gen.writeStringField("toRole", value.to().role().name());
             gen.writeStringField("name", value.name().asString());
             gen.writeEndObject();
@@ -51,9 +51,9 @@ class PartyRelationshipStd {
         public PartyRelationship deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             JsonNode node = p.getCodec().readTree(p);
             var id = PartyRelationshipId.of(node.get("id").asText());
-            var fromPartyId = PartyId.of(node.get("fromPartyId").asText());
+            var fromPartyId = PartyId.of(node.get("from").asText());
             var fromRole = new Role(node.get("fromRole").asText());
-            var toPartyId = PartyId.of(node.get("toPartyId").asText());
+            var toPartyId = PartyId.of(node.get("to").asText());
             var toRole = new Role(node.get("toRole").asText());
             var name = new RelationshipName(node.get("name").asText());
             var from = new PartyRole(fromPartyId, fromRole);
