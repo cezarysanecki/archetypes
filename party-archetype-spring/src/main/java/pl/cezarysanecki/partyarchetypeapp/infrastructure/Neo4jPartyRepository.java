@@ -10,7 +10,6 @@ import pl.cezarysanecki.partyarchetypeapp.model.Party;
 import pl.cezarysanecki.partyarchetypeapp.model.PartyId;
 import pl.cezarysanecki.partyarchetypeapp.model.PartyRepository;
 import pl.cezarysanecki.partyarchetypeapp.model.RegisteredIdentifier;
-import pl.cezarysanecki.partyarchetypeapp.utils.PartyFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -21,14 +20,12 @@ import java.util.function.Predicate;
 class Neo4jPartyRepository implements PartyRepository {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Neo4jPartyRepository.class);
-
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .registerModule(
                     new SimpleModule()
-                            .addSerializer(Party.class, new StdSerializers.PartySerializer())
-                            .addDeserializer(Party.class, new StdSerializers.PartyDeserializer())
+                            .addSerializer(Party.class, new PartyStd.Serializer())
+                            .addDeserializer(Party.class, new PartyStd.Deserializer())
             );
-    private final static PartyFactory PARTY_FACTORY = new PartyFactory();
 
     private final Neo4jClient neo4jClient;
 
@@ -42,7 +39,7 @@ class Neo4jPartyRepository implements PartyRepository {
                 .bindAll(Map.of("id", partyId.asString()))
                 .fetchAs(Map.class)
                 .one()
-                .map(Neo4jPartyRepository::createPartyFrom);
+                .map(values -> OBJECT_MAPPER.convertValue(values, Party.class));
     }
 
     @Override
@@ -57,9 +54,10 @@ class Neo4jPartyRepository implements PartyRepository {
             Map<String, Object> values = OBJECT_MAPPER.convertValue(party, Map.class);
             values.put("type", party.getClass().getSimpleName());
 
-            LOGGER.info("Saving Party: {} with values: {}", party, values);
+            LOGGER.debug("Saving Party: {} with values: {}", party, values);
 
-            neo4jClient.query("CREATE (n:Party) SET n = $props")
+            neo4jClient.query("MERGE (n:Party {id: $id}) SET n = $props")
+                    .bind(party.partyId().asString()).to("id")
                     .bind(values).to("props")
                     .run();
         } catch (Exception e) {
@@ -87,7 +85,7 @@ class Neo4jPartyRepository implements PartyRepository {
                 .fetchAs(Map.class)
                 .all()
                 .stream()
-                .map(Neo4jPartyRepository::createPartyFrom)
+                .map(values -> OBJECT_MAPPER.convertValue(values, Party.class))
                 .toList();
     }
 
@@ -97,12 +95,9 @@ class Neo4jPartyRepository implements PartyRepository {
                 .fetchAs(Map.class)
                 .all()
                 .stream()
-                .map(Neo4jPartyRepository::createPartyFrom)
+                .map(values -> OBJECT_MAPPER.convertValue(values, Party.class))
                 .filter(predicate)
                 .toList();
     }
 
-    private static Party createPartyFrom(Map values) {
-        return OBJECT_MAPPER.convertValue(values, Party.class);
-    }
 }

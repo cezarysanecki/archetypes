@@ -14,6 +14,10 @@ public record PartyRelationshipId(UUID value) {
         return value.toString();
     }
 
+    public static PartyRelationshipId of(String value) {
+        return new PartyRelationshipId(UUID.fromString(value));
+    }
+
     public static PartyRelationshipId of(UUID value) {
         return new PartyRelationshipId(value);
     }

@@ -1,6 +1,5 @@
 package pl.cezarysanecki.partyarchetypeapp.infrastructure;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -23,21 +22,18 @@ import pl.cezarysanecki.partyarchetypeapp.utils.PartyFactory;
 import pl.cezarysanecki.partyarchetypeapp.utils.RegisteredIdentifiersFactory;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-class StdSerializers {
+class PartyStd {
 
     private static final PartyFactory PARTY_FACTORY = new PartyFactory();
     private static final RegisteredIdentifiersFactory REGISTERED_IDENTIFIERS_FACTORY = new RegisteredIdentifiersFactory();
 
-    static class PartySerializer extends StdSerializer<Party> {
+    static class Serializer extends StdSerializer<Party> {
 
-        public PartySerializer() {
+        public Serializer() {
             super(Party.class);
         }
 
@@ -70,14 +66,14 @@ class StdSerializers {
         }
     }
 
-    static class PartyDeserializer extends StdDeserializer<Party> {
+    static class Deserializer extends StdDeserializer<Party> {
 
-        public PartyDeserializer() {
+        public Deserializer() {
             super(Party.class);
         }
 
         @Override
-        public Party deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+        public Party deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             JsonNode jsonNode = p.getCodec().readTree(p);
 
             String type = jsonNode.get("type").asText();

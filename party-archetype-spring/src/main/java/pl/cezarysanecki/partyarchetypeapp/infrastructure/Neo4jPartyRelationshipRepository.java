@@ -1,6 +1,9 @@
 package pl.cezarysanecki.partyarchetypeapp.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Repository;
 import pl.cezarysanecki.partyarchetypeapp.model.PartyId;
@@ -18,13 +21,17 @@ import java.util.function.Predicate;
 @Repository
 class Neo4jPartyRelationshipRepository implements PartyRelationshipRepository {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private final static Logger LOGGER = LoggerFactory.getLogger(Neo4jPartyRelationshipRepository.class);
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .registerModule(
+                    new SimpleModule()
+                            .addSerializer(PartyRelationship.class, new PartyRelationshipStd.Serializer())
+                            .addDeserializer(PartyRelationship.class, new PartyRelationshipStd.Deserializer())
+            );
 
-    private final Neo4jPartyRepository neo4jPartyRepository;
     private final Neo4jClient neo4jClient;
 
-    Neo4jPartyRelationshipRepository(Neo4jPartyRepository neo4jPartyRepository, Neo4jClient neo4jClient) {
-        this.neo4jPartyRepository = neo4jPartyRepository;
+    Neo4jPartyRelationshipRepository(Neo4jClient neo4jClient) {
         this.neo4jClient = neo4jClient;
     }
 
@@ -72,4 +79,3 @@ class Neo4jPartyRelationshipRepository implements PartyRelationshipRepository {
         return List.of();
     }
 }
-
