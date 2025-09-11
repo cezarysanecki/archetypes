@@ -26,7 +26,7 @@ public class PartyFactory {
         }
     }
 
-    private Class<? extends Party> findSubclassBy(String type) {
+    public Class<? extends Party> findSubclassBy(String type) {
         Set<Class<? extends Party>> subclasses = REFLECTIONS.getSubTypesOf(Party.class);
 
         return subclasses.stream()

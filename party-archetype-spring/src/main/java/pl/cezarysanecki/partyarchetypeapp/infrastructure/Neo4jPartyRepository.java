@@ -6,14 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Repository;
-import pl.cezarysanecki.partyarchetypeapp.common.Version;
-import pl.cezarysanecki.partyarchetypeapp.model.OrganizationName;
 import pl.cezarysanecki.partyarchetypeapp.model.Party;
 import pl.cezarysanecki.partyarchetypeapp.model.PartyId;
 import pl.cezarysanecki.partyarchetypeapp.model.PartyRepository;
-import pl.cezarysanecki.partyarchetypeapp.model.PersonalData;
 import pl.cezarysanecki.partyarchetypeapp.model.RegisteredIdentifier;
-import pl.cezarysanecki.partyarchetypeapp.model.Role;
 import pl.cezarysanecki.partyarchetypeapp.utils.PartyFactory;
 
 import java.util.List;
@@ -26,10 +22,12 @@ class Neo4jPartyRepository implements PartyRepository {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Neo4jPartyRepository.class);
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(
-            new SimpleModule()
-                    .addSerializer(Party.class, new StdSerializers.PartySerializer())
-    );
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .registerModule(
+                    new SimpleModule()
+                            .addSerializer(Party.class, new StdSerializers.PartySerializer())
+                            .addDeserializer(Party.class, new StdSerializers.PartyDeserializer())
+            );
     private final static PartyFactory PARTY_FACTORY = new PartyFactory();
 
     private final Neo4jClient neo4jClient;
@@ -105,7 +103,6 @@ class Neo4jPartyRepository implements PartyRepository {
     }
 
     private static Party createPartyFrom(Map values) {
-        String type = (String) values.get("type");
-        return PARTY_FACTORY.create(type, values);
+        return OBJECT_MAPPER.convertValue(values, Party.class);
     }
 }
