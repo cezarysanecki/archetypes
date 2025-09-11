@@ -3,8 +3,10 @@ package pl.cezarysanecki.partyarchetypeapp.infrastructure;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import pl.cezarysanecki.partyarchetypeapp.model.Organization;
 import pl.cezarysanecki.partyarchetypeapp.model.OrganizationName;
 import pl.cezarysanecki.partyarchetypeapp.model.Party;
+import pl.cezarysanecki.partyarchetypeapp.model.Person;
 import pl.cezarysanecki.partyarchetypeapp.model.PersonalData;
 import pl.cezarysanecki.partyarchetypeapp.model.RegisteredIdentifier;
 import pl.cezarysanecki.partyarchetypeapp.model.Role;
@@ -35,26 +37,12 @@ class StdSerializers {
             }
             gen.writeEndArray();
 
-            try {
-                if (value.getClass().getMethod("personalData") != null) {
-                    Method method = value.getClass().getMethod("personalData");
-                    Object returnValue = method.invoke(value);
-                    if (returnValue instanceof PersonalData personalData) {
-                        gen.writeStringField("firstName", personalData.firstName());
-                        gen.writeStringField("lastName", personalData.lastName());
-                    }
-                }
-            } catch (Exception e) {
+            if (value instanceof Person person) {
+                gen.writeStringField("firstName", person.personalData().firstName());
+                gen.writeStringField("lastName", person.personalData().lastName());
             }
-            try {
-                if (value.getClass().getMethod("organizationName") != null) {
-                    Method method = value.getClass().getMethod("organizationName");
-                    Object returnValue = method.invoke(value);
-                    if (returnValue instanceof OrganizationName organizationName) {
-                        gen.writeStringField("organizationName", organizationName.value());
-                    }
-                }
-            } catch (Exception e) {
+            if (value instanceof Organization organization) {
+                gen.writeStringField("organizationName", organization.organizationName().value());
             }
 
             gen.writeStringField("type", value.getClass().getSimpleName());
