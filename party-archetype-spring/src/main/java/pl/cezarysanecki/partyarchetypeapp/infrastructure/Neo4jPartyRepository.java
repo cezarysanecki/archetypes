@@ -1,7 +1,6 @@
 package pl.cezarysanecki.partyarchetypeapp.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.core.Neo4jClient;
@@ -34,7 +33,9 @@ class Neo4jPartyRepository implements PartyRepository {
     @Override
     public Optional<Party> findBy(PartyId partyId) {
         return neo4jClient.query("MATCH (p:Party {id: $id}) RETURN p")
-                .bindAll(Map.of("id", partyId.asString()))
+                .bindAll(
+                        Map.of("id", partyId.asString())
+                )
                 .fetchAs(Map.class)
                 .one()
                 .map(values -> OBJECT_MAPPER.convertValue(values, Party.class));
@@ -55,8 +56,10 @@ class Neo4jPartyRepository implements PartyRepository {
             LOGGER.debug("Saving Party: {} with values: {}", party, values);
 
             neo4jClient.query("MERGE (n:Party {id: $id}) SET n = $props")
-                    .bind(party.partyId().asString()).to("id")
-                    .bind(values).to("props")
+                    .bindAll(Map.of(
+                            "id", party.partyId().asString(),
+                            "props", values
+                    ))
                     .run();
         } catch (Exception e) {
             LOGGER.error("Could not save Party: {}", party, e);

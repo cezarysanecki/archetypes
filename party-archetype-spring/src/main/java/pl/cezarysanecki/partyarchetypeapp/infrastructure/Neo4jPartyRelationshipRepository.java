@@ -1,7 +1,6 @@
 package pl.cezarysanecki.partyarchetypeapp.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.core.Neo4jClient;
@@ -38,10 +37,12 @@ class Neo4jPartyRelationshipRepository implements PartyRelationshipRepository {
                                 "MERGE (from)-[r:" + partyRelationship.name().asString() + " {id: $relId}]->(to) " +
                                 "SET r += $props"
                 )
-                .bind(partyRelationship.from().partyId().asString()).to("fromId")
-                .bind(partyRelationship.to().partyId().asString()).to("toId")
-                .bind(partyRelationship.id().asString()).to("relId")
-                .bind(OBJECT_MAPPER.convertValue(partyRelationship, Map.class)).to("props")
+                .bindAll(Map.of(
+                        "fromId", partyRelationship.from().partyId().asString(),
+                        "toId", partyRelationship.to().partyId().asString(),
+                        "relId", partyRelationship.id().asString(),
+                        "props", OBJECT_MAPPER.convertValue(partyRelationship, Map.class)
+                ))
                 .run();
     }
 

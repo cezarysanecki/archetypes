@@ -37,6 +37,15 @@ class PartyStd {
     private static final PartyFactory PARTY_FACTORY = new PartyFactory();
     private static final RegisteredIdentifiersFactory REGISTERED_IDENTIFIERS_FACTORY = new RegisteredIdentifiersFactory();
 
+    private static final String ID = "id";
+    private static final String REGISTERED_IDENTIFIERS_PREFIX = "registeredIdentifiers.";
+    private static final String ROLES = "roles";
+    private static final String FIRST_NAME = "firstName";
+    private static final String LAST_NAME = "lastName";
+    private static final String ORGANIZATION_NAME = "organizationName";
+    private static final String TYPE = "type";
+    private static final String VERSION = "version";
+
     static class Serializer extends StdSerializer<Party> {
 
         public Serializer() {
@@ -46,28 +55,28 @@ class PartyStd {
         @Override
         public void serialize(Party value, JsonGenerator gen, SerializerProvider provider) throws IOException {
             gen.writeStartObject();
-            gen.writeStringField("id", value.partyId().asString());
+            gen.writeStringField(ID, value.partyId().asString());
 
             for (RegisteredIdentifier registeredIdentifier : value.registeredIdentifiers()) {
-                gen.writeStringField("registeredIdentifiers." + registeredIdentifier.getType(), registeredIdentifier.getValue());
+                gen.writeStringField(REGISTERED_IDENTIFIERS_PREFIX + registeredIdentifier.getType(), registeredIdentifier.getValue());
             }
 
-            gen.writeArrayFieldStart("roles");
+            gen.writeArrayFieldStart(ROLES);
             for (Role role : value.roles()) {
                 gen.writeString(role.name());
             }
             gen.writeEndArray();
 
             if (value instanceof Person person) {
-                gen.writeStringField("firstName", person.personalData().firstName());
-                gen.writeStringField("lastName", person.personalData().lastName());
+                gen.writeStringField(FIRST_NAME, person.personalData().firstName());
+                gen.writeStringField(LAST_NAME, person.personalData().lastName());
             }
             if (value instanceof Organization organization) {
-                gen.writeStringField("organizationName", organization.organizationName().value());
+                gen.writeStringField(ORGANIZATION_NAME, organization.organizationName().value());
             }
 
-            gen.writeStringField("type", value.getClass().getSimpleName());
-            gen.writeNumberField("version", value.version().value());
+            gen.writeStringField(TYPE, value.getClass().getSimpleName());
+            gen.writeNumberField(VERSION, value.version().value());
             gen.writeEndObject();
         }
     }
@@ -82,37 +91,36 @@ class PartyStd {
         public Party deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             JsonNode jsonNode = p.getCodec().readTree(p);
 
-            String type = jsonNode.get("type").asText();
-            PartyId partyId = PartyId.of(jsonNode.get("id").asText());
-            Version version = Version.of(jsonNode.get("version").asLong());
-            Set<Role> roles = StreamSupport.stream(jsonNode.get("roles").spliterator(), false)
+            String type = jsonNode.get(TYPE).asText();
+            PartyId partyId = PartyId.of(jsonNode.get(ID).asText());
+            Version version = Version.of(jsonNode.get(VERSION).asLong());
+            Set<Role> roles = StreamSupport.stream(jsonNode.get(ROLES).spliterator(), false)
                     .map(roleName -> new Role(roleName.asText()))
                     .collect(Collectors.toSet());
             Set<RegisteredIdentifier> registeredIdentifiers = jsonNode.properties().stream()
-                    .filter(nodeEntry -> nodeEntry.getKey().startsWith("registeredIdentifiers."))
+                    .filter(nodeEntry -> nodeEntry.getKey().startsWith(REGISTERED_IDENTIFIERS_PREFIX))
                     .map(nodeEntry -> REGISTERED_IDENTIFIERS_FACTORY.create(
-                            nodeEntry.getKey().substring("registeredIdentifiers.".length()),
+                            nodeEntry.getKey().substring(REGISTERED_IDENTIFIERS_PREFIX.length()),
                             nodeEntry.getValue().asText()))
                     .collect(Collectors.toSet());
 
             Class<? extends Party> partySubclass = PARTY_FACTORY.findSubclassBy(type);
 
             if (Person.class.isAssignableFrom(partySubclass)) {
-                String firstName = jsonNode.get("firstName").asText();
-                String lastName = jsonNode.get("lastName").asText();
+                String firstName = jsonNode.get(FIRST_NAME).asText();
+                String lastName = jsonNode.get(LAST_NAME).asText();
 
                 PersonalData personalData = new PersonalData(firstName, lastName);
 
                 return new Person(partyId, personalData, roles, registeredIdentifiers, version);
             } else if (Organization.class.isAssignableFrom(partySubclass)) {
-                String organizationNameText = jsonNode.get("organizationName").asText();
+                String organizationNameText = jsonNode.get(ORGANIZATION_NAME).asText();
 
                 OrganizationName organizationName = new OrganizationName(organizationNameText);
 
                 if (Company.class.isAssignableFrom(partySubclass)) {
                     return new Company(partyId, organizationName, roles, registeredIdentifiers, version);
-                }
-                if (OrganizationUnit.class.isAssignableFrom(partySubclass)) {
+                } else if (OrganizationUnit.class.isAssignableFrom(partySubclass)) {
                     return new OrganizationUnit(partyId, organizationName, roles, registeredIdentifiers, version);
                 }
             }
