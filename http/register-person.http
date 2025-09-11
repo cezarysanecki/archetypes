@@ -2,11 +2,11 @@ POST http://localhost:8080/api/persons
 Content-Type: application/json
 
 {
-  "firstName": "Aaa",
-  "lastName": "Majtek",
-  "roles": ["EMPLOYER"],
+  "firstName": "Tomasz",
+  "lastName": "Ogórek",
+  "roles": ["EMPLOYEE"],
   "registeredIdentifiers": [
-    { "type": "PERSONAL_IDENTIFICATION_NUMBER", "number": "98765432132" }
+    { "type": "PERSONAL_IDENTIFICATION_NUMBER", "number": "32132132122" }
   ]
 }
 
