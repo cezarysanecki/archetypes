@@ -33,7 +33,8 @@ class Neo4jPartyRelationshipRepository implements PartyRelationshipRepository {
     @Override
     public void save(PartyRelationship partyRelationship) {
         neo4jClient.query(
-                        "MATCH (from:Party {id: $fromId}), (to:Party {id: $toId}) " +
+                        "MATCH (from:Party {id: $fromId}) " +
+                                "MATCH (to:Party {id: $toId}) " +
                                 "MERGE (from)-[r:" + partyRelationship.name().asString() + " {id: $relId}]->(to) " +
                                 "SET r += $props"
                 )
